@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['"Noto Sans KR"', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,6 +50,26 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        island: {
+          joy: "hsl(var(--island-joy))",
+          peace: "hsl(var(--island-peace))",
+          love: "hsl(var(--island-love))",
+          hope: "hsl(var(--island-hope))",
+          sadness: "hsl(var(--island-sadness))",
+          anger: "hsl(var(--island-anger))",
+          fear: "hsl(var(--island-fear))",
+          fatigue: "hsl(var(--island-fatigue))",
+        },
+        "island-glow": {
+          joy: "hsl(var(--island-joy-glow))",
+          peace: "hsl(var(--island-peace-glow))",
+          love: "hsl(var(--island-love-glow))",
+          hope: "hsl(var(--island-hope-glow))",
+          sadness: "hsl(var(--island-sadness-glow))",
+          anger: "hsl(var(--island-anger-glow))",
+          fear: "hsl(var(--island-fear-glow))",
+          fatigue: "hsl(var(--island-fatigue-glow))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -65,20 +88,12 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
