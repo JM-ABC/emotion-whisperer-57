@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, Edit3 } from 'lucide-react';
 import { type Emotion, type Island, getEmotionById, getIslandById } from '@/lib/emotions';
+import { ISLAND_IMAGES } from '@/lib/island-images';
 import EmotionPicker from './EmotionPicker';
 
 interface EmotionResult {
@@ -85,11 +86,11 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            {emotionInfo.emoji}
+            <img src={ISLAND_IMAGES[emotionInfo.island]} alt={islandInfo.label} className="w-10 h-10 object-contain" />
           </motion.div>
           <div>
             <p className="text-xs text-muted-foreground">
-              {islandInfo.emoji} {islandInfo.label}
+              {islandInfo.label}
             </p>
             <p className="text-lg font-semibold text-foreground">
               {emotionInfo.label}

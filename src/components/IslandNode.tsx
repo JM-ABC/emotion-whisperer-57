@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { Island } from '@/lib/emotions';
+import { ISLAND_IMAGES } from '@/lib/island-images';
 
 interface IslandNodeProps {
   island: {
@@ -46,16 +47,20 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
 
       {/* Island body */}
       <motion.div
-        className={`relative rounded-full bg-gradient-to-br from-island-${island.id} to-island-glow-${island.id} flex flex-col items-center justify-center shadow-lg border border-foreground/5`}
+        className="relative flex flex-col items-center justify-center"
         style={{ width: size, height: size }}
         animate={{ y: [0, index % 2 === 0 ? -10 : -7, 0] }}
         transition={{ duration: index % 2 === 0 ? 5 : 7, repeat: Infinity, ease: 'easeInOut' }}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <span className="text-2xl md:text-3xl">{island.emoji}</span>
+        <img
+          src={ISLAND_IMAGES[island.id]}
+          alt={island.label}
+          className="w-full h-full object-contain drop-shadow-lg"
+        />
         {count > 0 && (
-          <span className="text-xs font-semibold text-primary-foreground/90 mt-0.5">
+          <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
             {count}
           </span>
         )}
