@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles, MessageCircle, Loader2 } from 'lucide-react';
-import CoachingPersonaSelector, { type Persona } from '@/components/CoachingPersonaSelector';
+import CoachingPersonaSelector, { type Persona, PERSONAS } from '@/components/CoachingPersonaSelector';
 import PatternReport from '@/components/PatternReport';
 import { loadMemories, getInsights } from '@/lib/memory-store';
 import { ISLANDS } from '@/lib/emotions';
@@ -135,6 +135,13 @@ const CoachingPage = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
+              {persona && (
+                <img
+                  src={PERSONAS.find(p => p.id === persona)?.image}
+                  alt=""
+                  className="w-16 h-16 rounded-full object-cover animate-pulse"
+                />
+              )}
               <Loader2 size={24} className="animate-spin text-primary" />
               <p className="text-sm text-muted-foreground">
                 {persona === 'joy' ? '기쁨이' : persona === 'sadness' ? '슬픔이' : persona === 'anger' ? '버럭이' : persona === 'fear' ? '소심이' : '까칠이'}가 생각하고 있어요...
@@ -154,6 +161,13 @@ const CoachingPage = () => {
               {/* Coaching message */}
               <div className="bg-card rounded-2xl p-5 border border-border space-y-3">
                 <div className="flex items-center gap-2">
+                  {persona && (
+                    <img
+                      src={PERSONAS.find(p => p.id === persona)?.image}
+                      alt=""
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  )}
                   <MessageCircle size={16} className="text-primary" />
                   <span className="text-xs font-medium text-muted-foreground">코칭 메시지</span>
                 </div>
