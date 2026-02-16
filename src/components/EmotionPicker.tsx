@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { ISLANDS, EMOTIONS, type Island, type Emotion, type EmotionInfo } from '@/lib/emotions';
+import { ISLAND_IMAGES } from '@/lib/island-images';
 
 interface EmotionPickerProps {
   onSelect: (emotion: Emotion) => void;
@@ -38,7 +39,7 @@ const EmotionPicker = ({ onSelect, selected }: EmotionPickerProps) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              <span className="text-xl">{island.emoji}</span>
+              <img src={ISLAND_IMAGES[island.id]} alt={island.label} className="w-10 h-10 object-contain" />
               <span className="text-[11px] font-medium text-secondary-foreground">
                 {island.label.replace('의 섬', '')}
               </span>
