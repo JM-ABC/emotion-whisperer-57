@@ -1,1 +1,7 @@
 project_id = "lswfphlvybenetvrigfy"
+
+[functions.analyze-emotion]
+verify_jwt = false
+
+[functions.ai-coaching]
+verify_jwt = false

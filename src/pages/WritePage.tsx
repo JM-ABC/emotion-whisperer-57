@@ -5,12 +5,13 @@ import { ArrowLeft, Sparkles } from 'lucide-react';
 import AnalyzingAnimation from '@/components/AnalyzingAnimation';
 import EmotionResultCard from '@/components/EmotionResultCard';
 import OrbSaveAnimation from '@/components/OrbSaveAnimation';
+import EmotionMission from '@/components/EmotionMission';
 import { type Emotion, type Island, getEmotionById } from '@/lib/emotions';
 import { saveMemory } from '@/lib/memory-store';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
-type Phase = 'write' | 'analyzing' | 'confirm' | 'saved';
+type Phase = 'write' | 'analyzing' | 'confirm' | 'saved' | 'mission';
 
 interface AIResult {
   emotion: Emotion;
@@ -19,6 +20,17 @@ interface AIResult {
   empathy_message: string;
 }
 
+const ISLAND_HSL: Record<Island, string> = {
+  joy: 'var(--island-joy)',
+  peace: 'var(--island-peace)',
+  love: 'var(--island-love)',
+  hope: 'var(--island-hope)',
+  sadness: 'var(--island-sadness)',
+  anger: 'var(--island-anger)',
+  fear: 'var(--island-fear)',
+  fatigue: 'var(--island-fatigue)',
+};
+
 const WritePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -26,6 +38,7 @@ const WritePage = () => {
   const [diary, setDiary] = useState('');
   const [aiResult, setAiResult] = useState<AIResult | null>(null);
   const [savedEmotion, setSavedEmotion] = useState<Emotion | null>(null);
+  const [savedIsland, setSavedIsland] = useState<Island | null>(null);
 
   const handleAnalyze = async () => {
     if (!diary.trim() || diary.trim().length < 5) {
@@ -40,13 +53,8 @@ const WritePage = () => {
         body: { diary: diary.trim() },
       });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
+      if (error) throw new Error(error.message);
+      if (data.error) throw new Error(data.error);
 
       setAiResult(data as AIResult);
       setPhase('confirm');
@@ -64,13 +72,35 @@ const WritePage = () => {
   const handleSave = (emotion: Emotion, island: Island, coreMemory: string) => {
     saveMemory(coreMemory, emotion);
     setSavedEmotion(emotion);
+    setSavedIsland(island);
     setPhase('saved');
   };
 
+  const handleOrbComplete = () => {
+    setPhase('mission');
+  };
+
   const emotionInfo = savedEmotion ? getEmotionById(savedEmotion) : null;
+  const activeIsland = aiResult?.island || savedIsland;
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-24 relative">
+      {/* Emotion color overlay */}
+      <AnimatePresence>
+        {activeIsland && (phase === 'confirm' || phase === 'saved' || phase === 'mission') && (
+          <motion.div
+            className="fixed inset-0 pointer-events-none z-0"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.2 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
+            style={{
+              background: `radial-gradient(ellipse at 50% 30%, hsl(${ISLAND_HSL[activeIsland]}), transparent 70%)`,
+            }}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Header */}
       <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
@@ -86,7 +116,16 @@ const WritePage = () => {
       </header>
 
       <AnimatePresence mode="wait">
-        {phase === 'saved' && emotionInfo ? (
+        {phase === 'mission' && savedIsland ? (
+          <motion.div
+            key="mission"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <EmotionMission island={savedIsland} onDismiss={() => navigate('/')} />
+          </motion.div>
+        ) : phase === 'saved' && emotionInfo ? (
           <motion.div
             key="saved"
             initial={{ opacity: 0 }}
@@ -96,7 +135,7 @@ const WritePage = () => {
             <OrbSaveAnimation
               island={emotionInfo.island}
               emotionInfo={emotionInfo}
-              onComplete={() => navigate('/')}
+              onComplete={handleOrbComplete}
             />
           </motion.div>
         ) : phase === 'analyzing' ? (
@@ -125,7 +164,6 @@ const WritePage = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
           >
-            {/* Diary input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">
                 오늘 하루 어떠셨나요?
@@ -143,7 +181,6 @@ const WritePage = () => {
               </p>
             </div>
 
-            {/* Analyze button */}
             <motion.button
               onClick={handleAnalyze}
               className={`w-full py-3.5 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${
