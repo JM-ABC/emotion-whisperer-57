@@ -16,15 +16,15 @@ interface EmotionResultCardProps {
   onSave: (emotion: Emotion, island: Island, coreMemory: string) => void;
 }
 
-const ISLAND_COLORS: Record<Island, string> = {
-  joy: 'hsl(45, 100%, 60%)',
-  peace: 'hsl(200, 80%, 65%)',
-  love: 'hsl(340, 80%, 65%)',
-  hope: 'hsl(140, 70%, 55%)',
-  sadness: 'hsl(220, 60%, 55%)',
-  anger: 'hsl(0, 75%, 55%)',
-  fear: 'hsl(270, 50%, 55%)',
-  fatigue: 'hsl(30, 40%, 50%)',
+const ISLAND_HSL: Record<Island, string> = {
+  joy: 'var(--island-joy)',
+  peace: 'var(--island-peace)',
+  love: 'var(--island-love)',
+  hope: 'var(--island-hope)',
+  sadness: 'var(--island-sadness)',
+  anger: 'var(--island-anger)',
+  fear: 'var(--island-fear)',
+  fatigue: 'var(--island-fatigue)',
 };
 
 const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
@@ -33,7 +33,7 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
 
   const emotionInfo = getEmotionById(selectedEmotion);
   const islandInfo = getIslandById(emotionInfo.island);
-  const color = ISLAND_COLORS[emotionInfo.island];
+  const hsl = ISLAND_HSL[emotionInfo.island];
 
   const handleSave = () => {
     onSave(selectedEmotion, emotionInfo.island, result.core_memory);
@@ -41,7 +41,7 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
 
   return (
     <motion.div
-      className="max-w-lg mx-auto px-4 pt-6 space-y-5"
+      className="max-w-lg mx-auto px-4 pt-6 space-y-5 relative z-10"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
@@ -57,23 +57,36 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
       <motion.div
         className="relative overflow-hidden rounded-2xl border border-border bg-card p-5 space-y-4"
         style={{
-          boxShadow: `0 0 30px -10px ${color}40`,
+          boxShadow: `0 0 40px -8px hsl(${hsl} / 0.4), 0 0 80px -20px hsl(${hsl} / 0.2)`,
         }}
       >
         {/* Glow accent */}
         <div
-          className="absolute top-0 left-0 right-0 h-1 rounded-t-2xl"
-          style={{ background: color }}
+          className="absolute top-0 left-0 right-0 h-1.5 rounded-t-2xl"
+          style={{ background: `hsl(${hsl})` }}
+        />
+
+        {/* Inner glow */}
+        <div
+          className="absolute inset-0 pointer-events-none opacity-10 rounded-2xl"
+          style={{
+            background: `radial-gradient(circle at 30% 20%, hsl(${hsl}), transparent 60%)`,
+          }}
         />
 
         {/* Island + Emotion */}
-        <div className="flex items-center gap-3 pt-1">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-            style={{ background: `${color}20`, boxShadow: `0 0 15px ${color}30` }}
+        <div className="relative flex items-center gap-3 pt-1">
+          <motion.div
+            className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
+            style={{
+              background: `hsl(${hsl} / 0.2)`,
+              boxShadow: `0 0 20px hsl(${hsl} / 0.3)`,
+            }}
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
           >
             {emotionInfo.emoji}
-          </div>
+          </motion.div>
           <div>
             <p className="text-xs text-muted-foreground">
               {islandInfo.emoji} {islandInfo.label}
@@ -85,7 +98,7 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
         </div>
 
         {/* Core memory */}
-        <div className="bg-background/50 rounded-xl p-4">
+        <div className="relative bg-background/50 rounded-xl p-4">
           <p className="text-xs text-muted-foreground mb-1">핵심 기억</p>
           <p className="text-sm font-medium text-foreground leading-relaxed">
             "{result.core_memory}"
@@ -114,7 +127,11 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
       {/* Save button */}
       <motion.button
         onClick={handleSave}
-        className="w-full py-3.5 rounded-xl font-medium text-sm bg-primary text-primary-foreground shadow-lg"
+        className="w-full py-3.5 rounded-xl font-medium text-sm shadow-lg"
+        style={{
+          background: `linear-gradient(135deg, hsl(${hsl}), hsl(var(--primary)))`,
+          color: 'hsl(var(--primary-foreground))',
+        }}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
       >

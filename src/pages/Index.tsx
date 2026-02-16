@@ -9,6 +9,17 @@ import { loadMemories, getInsights, getTodayMemory } from '@/lib/memory-store';
 import { PenLine } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
+const ISLAND_HSL: Record<string, string> = {
+  joy: 'var(--island-joy)',
+  peace: 'var(--island-peace)',
+  love: 'var(--island-love)',
+  hope: 'var(--island-hope)',
+  sadness: 'var(--island-sadness)',
+  anger: 'var(--island-anger)',
+  fear: 'var(--island-fear)',
+  fatigue: 'var(--island-fatigue)',
+};
+
 const Index = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -16,6 +27,7 @@ const Index = () => {
   const [selectedOrb, setSelectedOrb] = useState<CoreMemory | null>(null);
   const insights = getInsights(memories);
   const todayMemory = getTodayMemory();
+  const todayEmotionInfo = todayMemory ? getEmotionById(todayMemory.emotion) : null;
 
   useEffect(() => {
     setMemories(loadMemories());
@@ -27,6 +39,19 @@ const Index = () => {
   return (
     <div className="relative min-h-screen overflow-hidden pb-20">
       <StarField />
+
+      {/* Today's emotion color accent */}
+      {todayMemory && (
+        <motion.div
+          className="fixed inset-0 pointer-events-none z-[1]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.12 }}
+          transition={{ duration: 1.5 }}
+          style={{
+            background: `radial-gradient(ellipse at 50% 0%, hsl(${ISLAND_HSL[todayMemory.island]}), transparent 60%)`,
+          }}
+        />
+      )}
 
       {/* Header */}
       <motion.header
@@ -87,8 +112,16 @@ const Index = () => {
         transition={{ delay: 1.2, duration: 0.5 }}
       >
         {todayMemory ? (
-          <div className="bg-card/60 backdrop-blur-md rounded-2xl p-4 border border-border">
-            <p className="text-xs text-muted-foreground mb-1">오늘의 기억</p>
+          <div
+            className="relative overflow-hidden rounded-2xl p-4 border border-border"
+            style={{
+              background: `linear-gradient(135deg, hsl(${ISLAND_HSL[todayMemory.island]} / 0.1), hsl(var(--card)))`,
+            }}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              {todayEmotionInfo && <span className="text-sm">{todayEmotionInfo.emoji}</span>}
+              <p className="text-xs text-muted-foreground">오늘의 기억</p>
+            </div>
             <p className="text-sm text-foreground line-clamp-2">{todayMemory.content}</p>
           </div>
         ) : (
