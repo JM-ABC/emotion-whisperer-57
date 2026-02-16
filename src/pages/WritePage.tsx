@@ -1,53 +1,92 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
-import EmotionPicker from '@/components/EmotionPicker';
+import { ArrowLeft, Sparkles } from 'lucide-react';
+import AnalyzingAnimation from '@/components/AnalyzingAnimation';
+import EmotionResultCard from '@/components/EmotionResultCard';
 import OrbSaveAnimation from '@/components/OrbSaveAnimation';
-import { type Emotion, getEmotionById } from '@/lib/emotions';
-import { saveMemory, getTodayMemory } from '@/lib/memory-store';
+import { type Emotion, type Island, getEmotionById } from '@/lib/emotions';
+import { saveMemory } from '@/lib/memory-store';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+
+type Phase = 'write' | 'analyzing' | 'confirm' | 'saved';
+
+interface AIResult {
+  emotion: Emotion;
+  island: Island;
+  core_memory: string;
+  empathy_message: string;
+}
 
 const WritePage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const existing = getTodayMemory();
-  const [emotion, setEmotion] = useState<Emotion | undefined>(existing?.emotion);
-  const [content, setContent] = useState(existing?.content ?? '');
-  const [saved, setSaved] = useState(false);
+  const [phase, setPhase] = useState<Phase>('write');
+  const [diary, setDiary] = useState('');
+  const [aiResult, setAiResult] = useState<AIResult | null>(null);
+  const [savedEmotion, setSavedEmotion] = useState<Emotion | null>(null);
 
-  const handleSave = () => {
-    if (!emotion) {
-      toast({ title: '감정을 선택해주세요', variant: 'destructive' });
+  const handleAnalyze = async () => {
+    if (!diary.trim() || diary.trim().length < 5) {
+      toast({ title: '오늘 있었던 일을 조금 더 적어주세요', variant: 'destructive' });
       return;
     }
-    if (!content.trim()) {
-      toast({ title: '기억을 작성해주세요', variant: 'destructive' });
-      return;
+
+    setPhase('analyzing');
+
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-emotion', {
+        body: { diary: diary.trim() },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      setAiResult(data as AIResult);
+      setPhase('confirm');
+    } catch (e: any) {
+      console.error('AI analysis failed:', e);
+      toast({
+        title: '감정 분석에 실패했어요',
+        description: e.message || '다시 시도해주세요',
+        variant: 'destructive',
+      });
+      setPhase('write');
     }
-    saveMemory(content.trim(), emotion);
-    setSaved(true);
   };
 
-  const emotionInfo = emotion ? getEmotionById(emotion) : null;
+  const handleSave = (emotion: Emotion, island: Island, coreMemory: string) => {
+    saveMemory(coreMemory, emotion);
+    setSavedEmotion(emotion);
+    setPhase('saved');
+  };
+
+  const emotionInfo = savedEmotion ? getEmotionById(savedEmotion) : null;
 
   return (
     <div className="min-h-screen pb-24">
       {/* Header */}
       <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
+          <button
+            onClick={() => phase === 'write' ? navigate(-1) : setPhase('write')}
+            className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors"
+          >
             <ArrowLeft size={20} />
           </button>
-          <h1 className="text-base font-semibold text-foreground">
-            {existing ? '오늘의 기억 수정' : '오늘의 기억'}
-          </h1>
+          <h1 className="text-base font-semibold text-foreground">오늘의 기억</h1>
           <div className="w-9" />
         </div>
       </header>
 
       <AnimatePresence mode="wait">
-        {saved ? (
+        {phase === 'saved' && emotionInfo ? (
           <motion.div
             key="saved"
             initial={{ opacity: 0 }}
@@ -55,51 +94,69 @@ const WritePage = () => {
             transition={{ duration: 0.3 }}
           >
             <OrbSaveAnimation
-              island={emotionInfo?.island ?? 'joy'}
+              island={emotionInfo.island}
               emotionInfo={emotionInfo}
               onComplete={() => navigate('/')}
             />
           </motion.div>
+        ) : phase === 'analyzing' ? (
+          <motion.div
+            key="analyzing"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <AnalyzingAnimation />
+          </motion.div>
+        ) : phase === 'confirm' && aiResult ? (
+          <motion.div
+            key="confirm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <EmotionResultCard result={aiResult} onSave={handleSave} />
+          </motion.div>
         ) : (
           <motion.div
-            key="form"
+            key="write"
             className="max-w-lg mx-auto px-4 pt-6 space-y-6"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
           >
-            {/* Emotion Picker */}
-            <EmotionPicker onSelect={setEmotion} selected={emotion} />
-
-            {/* Content */}
+            {/* Diary input */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-muted-foreground">
-                오늘의 핵심 기억
+                오늘 하루 어떠셨나요?
               </label>
               <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="오늘 가장 기억에 남는 순간을 적어주세요..."
-                rows={5}
+                value={diary}
+                onChange={(e) => setDiary(e.target.value)}
+                placeholder="오늘 있었던 일, 느꼈던 감정을 편하게 적어주세요..."
+                rows={8}
                 className="w-full bg-card border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none text-sm leading-relaxed"
-                maxLength={500}
+                maxLength={1000}
               />
               <p className="text-right text-xs text-muted-foreground">
-                {content.length}/500
+                {diary.length}/1000
               </p>
             </div>
 
-            {/* Save */}
+            {/* Analyze button */}
             <motion.button
-              onClick={handleSave}
-              className={`w-full py-3.5 rounded-xl font-medium text-sm transition-all ${
-                emotion && content.trim()
+              onClick={handleAnalyze}
+              className={`w-full py-3.5 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2 ${
+                diary.trim().length >= 5
                   ? 'bg-primary text-primary-foreground shadow-lg'
                   : 'bg-muted text-muted-foreground cursor-not-allowed'
               }`}
-              whileHover={emotion && content.trim() ? { scale: 1.01 } : {}}
-              whileTap={emotion && content.trim() ? { scale: 0.99 } : {}}
+              whileHover={diary.trim().length >= 5 ? { scale: 1.01 } : {}}
+              whileTap={diary.trim().length >= 5 ? { scale: 0.99 } : {}}
+              disabled={diary.trim().length < 5}
             >
-              기억 저장하기
+              <Sparkles size={16} />
+              AI에게 맡기기
             </motion.button>
           </motion.div>
         )}
