@@ -69,7 +69,7 @@ const Index = () => {
       </motion.header>
 
       {/* Islands Map */}
-      <div className="relative z-10 mx-4 h-[70vh] min-h-[500px]">
+      <div className="relative z-10 mx-4 h-[60vh] min-h-[400px]">
         {ISLANDS.map((island, index) => (
           <IslandNode
             key={island.id}
