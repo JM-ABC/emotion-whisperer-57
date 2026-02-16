@@ -1,76 +1,79 @@
 
-# Inside Out 스타일 기억 구슬 시각화 구현
+# AI 기반 자동 감정 분석 플로우 구현
 
 ## 개요
-인사이드 아웃 영화의 핵심 비주얼인 **빛나는 기억 구슬**과 **구슬이 또르르 굴러가며 구슬통에 담기는 애니메이션**을 구현합니다. 기억 저장 시 구슬이 생성되어 통에 담기는 시각적 피드백을 제공합니다.
+현재의 "감정 수동 선택 → 기억 작성" 플로우를 **"자유롭게 하루 일기 작성 → AI가 감정/핵심기억 자동 추출 → 구슬 저장"** 플로우로 전환합니다.
 
----
+## 새로운 사용자 플로우
 
-## 구현 내용
+```text
+[1단계] 자유 작성
+  사용자가 오늘 있었던 일을 편하게 적음
+  "오늘 회사에서 발표했는데 잘 돼서 기분 좋았어. 근데 퇴근길에 비가 와서 좀 우울했어..."
 
-### 1. MemoryOrb 컴포넌트 (기억 구슬)
-- 각 감정 섬의 색상에 맞는 반투명한 유리 구슬 디자인
-- CSS로 구현: `radial-gradient` + `box-shadow` + 반사광 효과
-- 내부에 은은한 빛이 흐르는 glow 애니메이션
-- 크기: 약 40-60px 원형
+        ↓ "AI에게 맡기기" 버튼 클릭
 
-### 2. OrbJar 컴포넌트 (구슬통/구슬 선반)
-- 인사이드 아웃의 기억 저장소를 연상시키는 투명한 병/통 디자인
-- CSS로 유리 재질감 표현 (backdrop-blur, 반투명 border)
-- 내부에 쌓인 구슬들이 보이는 구조
-- 홈 화면 하단 또는 기억 저장 완료 화면에 배치
+[2단계] AI 분석 중 (로딩)
+  구슬이 빙글빙글 도는 분석 애니메이션 표시 (1~2초)
 
-### 3. 구슬 굴러가는 애니메이션 (저장 시)
-- 기억 저장 버튼 클릭 후 표시되는 저장 완료 화면 개선
-- `framer-motion`으로 구현:
-  1. 구슬이 화면 상단에서 생성 (감정 색상의 빛나는 구슬)
-  2. 포물선을 그리며 아래로 떨어짐
-  3. 구슬통에 "통" 하고 도착하는 bounce 효과
-  4. 기존 구슬들 위에 쌓이는 모습
-- 약 2초간 진행 후 홈으로 이동
+        ↓ AI 응답 수신
 
-### 4. 홈 화면 구슬 표시
-- Index 페이지의 "오늘의 기억" 영역에 최근 기억들을 구슬 형태로 표시
-- 각 구슬은 해당 감정 섬의 색상
-- 구슬을 탭하면 기억 내용을 간단히 볼 수 있음
+[3단계] AI 결과 확인
+  AI가 추출한 결과를 카드로 표시:
+  - 감정 섬: 기쁨의 섬 ☀️
+  - 감정: 행복 😊
+  - 핵심 기억: "회사 발표가 잘 되어 뿌듯했던 순간"
 
----
+  사용자가 확인하거나, 감정을 수정할 수 있음
+
+        ↓ "이대로 저장" 또는 감정 수정 후 저장
+
+[4단계] 구슬 저장 애니메이션
+  기존 OrbSaveAnimation 재활용 → 홈으로 이동
+```
 
 ## 변경 파일
 
 | 파일 | 작업 |
 |------|------|
-| `src/components/MemoryOrb.tsx` | **신규** - 기억 구슬 컴포넌트 (유리 재질, 감정별 색상, glow) |
-| `src/components/OrbJar.tsx` | **신규** - 구슬통 컴포넌트 (유리 용기 + 내부 구슬 목록) |
-| `src/components/OrbSaveAnimation.tsx` | **신규** - 저장 시 구슬이 굴러 들어가는 애니메이션 시퀀스 |
-| `src/pages/WritePage.tsx` | **수정** - 저장 완료 화면을 구슬 애니메이션으로 교체 |
-| `src/pages/Index.tsx` | **수정** - 하단에 최근 기억 구슬들을 OrbJar로 표시 |
-| `src/index.css` | **수정** - 구슬 관련 keyframes 추가 (shine, roll, bounce) |
-
----
+| `supabase/functions/analyze-emotion/index.ts` | **신규** - Lovable AI를 사용해 일기 텍스트에서 감정/핵심기억 추출하는 Edge Function |
+| `src/pages/WritePage.tsx` | **수정** - 3단계 플로우로 전환 (작성 → AI 분석 → 확인/저장) |
+| `src/components/EmotionPicker.tsx` | 유지 - AI 결과 수정 시 수동 선택 폴백으로 재활용 |
+| `src/components/AnalyzingAnimation.tsx` | **신규** - AI 분석 중 로딩 애니메이션 (구슬이 빙글빙글 도는 모션) |
+| `src/components/EmotionResultCard.tsx` | **신규** - AI가 찾아낸 감정/핵심기억을 보여주는 카드 컴포넌트 |
 
 ## 기술 구현 세부사항
 
-### MemoryOrb 스타일링 (CSS)
+### Edge Function: `analyze-emotion`
+- Lovable AI Gateway (`google/gemini-3-flash-preview`) 사용
+- Tool calling으로 구조화된 응답 추출:
+  - `emotion`: 16개 감정 중 하나
+  - `island`: 8개 섬 중 하나
+  - `core_memory`: 핵심 기억 한 줄 요약
+  - `empathy_message`: 공감 한마디
+- 비스트리밍 방식 (짧은 응답이므로)
+- 429/402 에러 핸들링 포함
+
+### WritePage 3단계 상태 관리
 ```text
-- radial-gradient로 구슬 내부 빛 표현
-- ::before pseudo-element로 반사광 (흰색 하이라이트)
-- box-shadow로 외부 glow (감정 색상 기반)
-- animation: orb-shine (내부 빛 회전)
+phase: 'write' → 'analyzing' → 'confirm' → 'saved'
+
+write: 자유 텍스트 입력 + "AI에게 맡기기" 버튼
+analyzing: AnalyzingAnimation 표시 (1~2초)
+confirm: EmotionResultCard 표시 + 수정/저장 버튼
+saved: 기존 OrbSaveAnimation
 ```
 
-### OrbSaveAnimation 시퀀스 (framer-motion)
-```text
-1단계 (0~0.3s): 구슬 생성 - scale 0→1, 화면 중앙 상단
-2단계 (0.3~1.0s): 구슬 낙하 - 포물선 경로 (y 이동 + 약간의 x 흔들림)
-3단계 (1.0~1.3s): 바운스 착지 - 통에 도착, scale 살짝 찌그러짐→복원
-4단계 (1.3~2.0s): 안착 - 기존 구슬들 사이에 자리잡기 + 완료 메시지
-```
+### AnalyzingAnimation 컴포넌트
+- 구슬이 여러 감정 색상으로 변하면서 회전하는 framer-motion 애니메이션
+- "감정을 분석하고 있어요..." 텍스트 표시
 
-### OrbJar 디자인
-```text
-- 반투명 컨테이너 (glass morphism)
-- 하단이 둥근 병 형태 (border-radius)
-- 내부 구슬들은 flex-wrap으로 자연스럽게 쌓임
-- 최대 표시 개수: 최근 10개
-```
+### EmotionResultCard 컴포넌트
+- AI가 찾은 감정 섬의 색상으로 스타일링된 카드
+- 감정 이모지 + 라벨 + 핵심 기억 요약 표시
+- AI의 공감 메시지 표시
+- "이대로 저장" 버튼 + "감정 수정하기" 토글 (EmotionPicker 폴백)
+
+### Lovable Cloud 필요
+- 이 기능은 Lovable AI Edge Function이 필요하므로 Lovable Cloud 활성화가 선행되어야 합니다
+- `LOVABLE_API_KEY`는 자동 제공됩니다
