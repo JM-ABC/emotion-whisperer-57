@@ -3,13 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import StarField from '@/components/StarField';
 import IslandNode from '@/components/IslandNode';
-import { ISLANDS } from '@/lib/emotions';
+import OrbJar from '@/components/OrbJar';
+import { ISLANDS, type CoreMemory, getEmotionById } from '@/lib/emotions';
 import { loadMemories, getInsights, getTodayMemory } from '@/lib/memory-store';
 import { PenLine } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const Index = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [memories, setMemories] = useState(loadMemories());
+  const [selectedOrb, setSelectedOrb] = useState<CoreMemory | null>(null);
   const insights = getInsights(memories);
   const todayMemory = getTodayMemory();
 
@@ -51,6 +55,29 @@ const Index = () => {
           />
         ))}
       </div>
+
+      {/* Memory Orb Jar */}
+      {memories.length > 0 && (
+        <motion.div
+          className="relative z-10 mx-6 mt-2"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 0.5 }}
+        >
+          <p className="text-xs text-muted-foreground mb-3 text-center">나의 기억 구슬</p>
+          <OrbJar
+            memories={memories}
+            maxDisplay={10}
+            onOrbClick={(memory) => {
+              const info = getEmotionById(memory.emotion);
+              toast({
+                title: `${info.emoji} ${info.label}`,
+                description: memory.content,
+              });
+            }}
+          />
+        </motion.div>
+      )}
 
       {/* Today's Status */}
       <motion.div

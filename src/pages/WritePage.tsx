@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Check } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import EmotionPicker from '@/components/EmotionPicker';
+import OrbSaveAnimation from '@/components/OrbSaveAnimation';
 import { type Emotion, getEmotionById } from '@/lib/emotions';
 import { saveMemory, getTodayMemory } from '@/lib/memory-store';
 import { useToast } from '@/hooks/use-toast';
@@ -26,7 +27,6 @@ const WritePage = () => {
     }
     saveMemory(content.trim(), emotion);
     setSaved(true);
-    setTimeout(() => navigate('/'), 1500);
   };
 
   const emotionInfo = emotion ? getEmotionById(emotion) : null;
@@ -50,22 +50,15 @@ const WritePage = () => {
         {saved ? (
           <motion.div
             key="saved"
-            className="flex flex-col items-center justify-center mt-32 px-6"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
           >
-            <motion.div
-              className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mb-4"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-            >
-              <Check className="text-primary" size={32} />
-            </motion.div>
-            <p className="text-lg font-semibold text-foreground">기억이 저장되었어요</p>
-            <p className="text-sm text-muted-foreground mt-1">
-              {emotionInfo?.emoji} {emotionInfo?.label}의 기억이 섬에 도착했습니다
-            </p>
+            <OrbSaveAnimation
+              island={emotionInfo?.island ?? 'joy'}
+              emotionInfo={emotionInfo}
+              onComplete={() => navigate('/')}
+            />
           </motion.div>
         ) : (
           <motion.div
