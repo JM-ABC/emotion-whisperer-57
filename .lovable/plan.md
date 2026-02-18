@@ -1,50 +1,54 @@
 
-# 캐릭터 이미지 적용 + 섬 이미지 준비
 
-## 개요
-업로드해주신 5개 캐릭터 이미지를 코칭 페르소나 선택 UI에 적용합니다. 개별 섬 이미지는 올려주시면 바로 적용할 예정입니다.
+# 섬 이미지 레이아웃 개선 + 누끼 처리
 
-## 캐릭터-이미지 매핑
+## 문제점
+1. 섬 이미지들의 흰색 배경이 다크 테마에서 사각형으로 보여 어색함
+2. 8개 섬이 오른쪽으로 치우쳐 있어 좌우 균형이 맞지 않음
 
-| 캐릭터 | 이미지 | 설명 |
-|--------|--------|------|
-| 기쁨이 (Joy) | 노란 빛나는 캐릭터 | `Gemini_Generated_Image_60ssv160ssv160ss.png` |
-| 슬픔이 (Sadness) | 파란 물방울 캐릭터 | `Gemini_Generated_Image_60ssv160ssv160ss_1.png` |
-| 버럭이 (Anger) | 빨간 용암 캐릭터 | `Gemini_Generated_Image_60ssv160ssv160ss_2.png` |
-| 소심이 (Fear) | 보라 캐릭터 | `Gemini_Generated_Image_60ssv160ssv160ss_3.png` |
-| 까칠이 (Disgust) | 초록 캐릭터 | `Gemini_Generated_Image_60ssv160ssv160ss_4.png` |
+## 해결 방안
 
-## 변경 내용
+### 1. 누끼 처리 (흰 배경 제거)
+CSS `mix-blend-mode`를 사용하여 흰 배경을 투명하게 처리합니다. 다크 배경 위의 흰색 부분을 제거하는 효과입니다.
 
-### 1. 이미지 파일 복사
-- 5개 캐릭터 이미지를 `src/assets/characters/` 폴더에 복사
-- 파일명을 `joy.png`, `sadness.png`, `anger.png`, `fear.png`, `disgust.png`으로 정리
+- `IslandNode.tsx`의 `<img>` 태그에 `mix-blend-mode: screen` 적용
+- screen 블렌드 모드는 흰색 배경을 투명하게 만들고 밝은 색상만 남김
+- 추가로 `drop-shadow`를 강화하여 이미지가 배경에 자연스럽게 녹아들도록 처리
 
-### 2. CoachingPersonaSelector.tsx 수정
-- 이모지(`😊`, `😢` 등) 대신 캐릭터 이미지를 `<img>` 태그로 표시
-- 이미지 크기: 약 48x48px (현재 이모지 크기 대비 더 크고 선명하게)
-- 선택 시 이미지에 glow 효과 추가
-- 그리드를 5열에서 유지하되, 각 셀 높이를 늘려 이미지가 잘 보이도록 조정
+### 2. 섬 위치 재배치 (좌우 균형)
+현재 `ISLAND_POSITIONS` 좌표를 좌우 대칭에 가깝게 재조정합니다.
 
-### 3. CoachingPage.tsx 수정
-- 로딩 상태에서 선택된 캐릭터 이미지를 함께 표시 ("기쁨이가 생각하고 있어요..." 옆에 캐릭터 이미지)
-- 코칭 결과 카드 상단에 해당 캐릭터 이미지 작게 표시
+현재 좌표 (오른쪽 편중):
+```text
+15%, 55%, 75%, 25%, 60%, 10%, 45%, 78%
+```
 
-### 4. 섬 이미지 (대기)
-- 개별 섬 이미지를 올려주시면 `src/assets/islands/` 폴더에 저장
-- `IslandNode.tsx`에서 이모지 대신 섬 이미지 사용
-- `EmotionPicker.tsx`, `EmotionResultCard.tsx` 등에서도 섬 이모지를 이미지로 교체
+개선 좌표 (균형 잡힌 배치):
+```text
+  50%        (상단 중앙)
+20%  80%     (2열 좌우)
+  40%  65%   (3열)
+15%  55%     (4열)
+  35%  75%   (하단 좌우)
+```
 
----
+지그재그 패턴으로 배치하여 시각적으로 고르게 분포시킵니다.
 
-## 변경 파일 요약
+## 변경 파일
 
-| 파일 | 작업 |
-|------|------|
-| `src/assets/characters/joy.png` | 복사 - 기쁨이 이미지 |
-| `src/assets/characters/sadness.png` | 복사 - 슬픔이 이미지 |
-| `src/assets/characters/anger.png` | 복사 - 버럭이 이미지 |
-| `src/assets/characters/fear.png` | 복사 - 소심이 이미지 |
-| `src/assets/characters/disgust.png` | 복사 - 까칠이 이미지 |
-| `src/components/CoachingPersonaSelector.tsx` | 수정 - 이모지를 캐릭터 이미지로 교체 |
-| `src/pages/CoachingPage.tsx` | 수정 - 로딩/결과 화면에 캐릭터 이미지 추가 |
+| 파일 | 변경 내용 |
+|------|----------|
+| `src/components/IslandNode.tsx` | 이미지에 `mix-blend-mode: screen` 적용, `ISLAND_POSITIONS` 좌표 재배치 |
+
+## 기술 세부사항
+
+### mix-blend-mode: screen
+- 어두운 배경 위에서 흰색 영역을 투명화하는 CSS 블렌딩 기법
+- 이미지 파일 자체를 수정하지 않고 CSS만으로 누끼 효과 구현
+- 이미지의 밝은 컬러(섬 본체)는 그대로 유지됨
+- 필요시 `brightness`/`contrast` 필터로 색감 보정 추가
+
+### 좌표 재배치 원칙
+- 화면 중앙(50%)을 기준으로 좌우 대칭에 가깝게 배치
+- 상하 간격을 균등하게 분배 (12%~85% 범위)
+- 겹치지 않도록 최소 간격 유지
