@@ -33,13 +33,13 @@ const EmotionPicker = ({ onSelect, selected }: EmotionPickerProps) => {
               onClick={() => handleIslandClick(island.id)}
               className={`relative flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${
                 selectedIsland === island.id
-                  ? `border-island-${island.id} bg-island-${island.id}/10`
-                  : 'border-border bg-card hover:border-muted-foreground/30'
+                  ? `border-island-${island.id}/50 bg-island-${island.id}/10`
+                  : 'border-transparent bg-transparent hover:bg-muted/20'
               }`}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              <img src={ISLAND_IMAGES[island.id]} alt={island.label} className="w-10 h-10 object-contain" />
+              <img src={ISLAND_IMAGES[island.id]} alt={island.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen', filter: 'brightness(1.3) contrast(1.15)' }} />
               <span className="text-[11px] font-medium text-secondary-foreground">
                 {island.label.replace('의 섬', '')}
               </span>
