@@ -58,8 +58,8 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
         <img
           src={ISLAND_IMAGES[island.id]}
           alt={island.label}
-          className="w-full h-full object-contain drop-shadow-lg"
-          style={{ mixBlendMode: 'screen', filter: 'brightness(1.1) contrast(1.05)' }}
+          className="w-full h-full object-contain"
+          style={{ mixBlendMode: 'screen', filter: 'brightness(1.3) contrast(1.15) drop-shadow(0 0 8px currentColor)' }}
         />
         {count > 0 && (
           <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">

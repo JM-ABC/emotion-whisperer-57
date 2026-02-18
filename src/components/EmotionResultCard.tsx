@@ -80,13 +80,13 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
           <motion.div
             className="w-14 h-14 rounded-full flex items-center justify-center text-2xl"
             style={{
-              background: `hsl(${hsl} / 0.2)`,
-              boxShadow: `0 0 20px hsl(${hsl} / 0.3)`,
+              background: `hsl(${hsl} / 0.1)`,
+              boxShadow: `0 0 20px hsl(${hsl} / 0.15)`,
             }}
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <img src={ISLAND_IMAGES[emotionInfo.island]} alt={islandInfo.label} className="w-10 h-10 object-contain" />
+            <img src={ISLAND_IMAGES[emotionInfo.island]} alt={islandInfo.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen', filter: 'brightness(1.3) contrast(1.15)' }} />
           </motion.div>
           <div>
             <p className="text-xs text-muted-foreground">
