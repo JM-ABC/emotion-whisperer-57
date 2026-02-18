@@ -15,14 +15,15 @@ interface IslandNodeProps {
 }
 
 const ISLAND_POSITIONS = [
-  { x: '15%', y: '20%' },
-  { x: '55%', y: '12%' },
-  { x: '75%', y: '35%' },
-  { x: '25%', y: '45%' },
-  { x: '60%', y: '55%' },
-  { x: '10%', y: '68%' },
-  { x: '45%', y: '75%' },
-  { x: '78%', y: '72%' },
+  { x: '50%', y: '10%' },
+  { x: '20%', y: '25%' },
+  { x: '80%', y: '22%' },
+  { x: '40%', y: '40%' },
+  { x: '65%', y: '42%' },
+  { x: '15%', y: '58%' },
+  { x: '55%', y: '60%' },
+  { x: '35%', y: '78%' },
+  { x: '75%', y: '75%' },
 ];
 
 const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
@@ -58,6 +59,7 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
           src={ISLAND_IMAGES[island.id]}
           alt={island.label}
           className="w-full h-full object-contain drop-shadow-lg"
+          style={{ mixBlendMode: 'screen', filter: 'brightness(1.1) contrast(1.05)' }}
         />
         {count > 0 && (
           <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
