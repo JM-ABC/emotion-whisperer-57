@@ -68,17 +68,32 @@ const Index = () => {
         </p>
       </motion.header>
 
-      {/* Islands Map */}
-      <div className="relative z-10 mx-auto max-w-md px-4 h-[60vh] min-h-[400px]">
-        {ISLANDS.map((island, index) => (
-          <IslandNode
-            key={island.id}
-            island={island}
-            count={getCount(island.id)}
-            index={index}
-            onClick={() => navigate('/insight')}
-          />
-        ))}
+      {/* Islands Map - Grid layout */}
+      <div className="relative z-10 mx-auto max-w-sm px-6 py-4">
+        <div className="grid grid-cols-3 gap-y-2 gap-x-2 place-items-center">
+          {/* Row 1: center */}
+          <div className="col-start-2">
+            <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} />
+          </div>
+          {/* Row 2: left + right */}
+          <div className="col-start-1">
+            <IslandNode island={ISLANDS[1]} count={getCount(ISLANDS[1].id)} index={1} onClick={() => navigate('/insight')} />
+          </div>
+          <div className="col-start-3">
+            <IslandNode island={ISLANDS[2]} count={getCount(ISLANDS[2].id)} index={2} onClick={() => navigate('/insight')} />
+          </div>
+          {/* Row 3: all three */}
+          <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} />
+          <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} />
+          <IslandNode island={ISLANDS[5]} count={getCount(ISLANDS[5].id)} index={5} onClick={() => navigate('/insight')} />
+          {/* Row 4: left-center + right-center */}
+          <div className="col-start-1 col-span-1 justify-self-end mr-2">
+            <IslandNode island={ISLANDS[6]} count={getCount(ISLANDS[6].id)} index={6} onClick={() => navigate('/insight')} />
+          </div>
+          <div className="col-start-3 col-span-1 justify-self-start ml-2">
+            <IslandNode island={ISLANDS[7]} count={getCount(ISLANDS[7].id)} index={7} onClick={() => navigate('/insight')} />
+          </div>
+        </div>
       </div>
 
       {/* Memory Orb Jar */}
