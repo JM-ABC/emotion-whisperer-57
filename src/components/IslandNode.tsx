@@ -17,7 +17,7 @@ interface IslandNodeProps {
 }
 
 const IslandNode = ({ island, count, index, onClick, className = '', style }: IslandNodeProps) => {
-  const size = Math.max(70, Math.min(110, 70 + count * 8));
+  const size = Math.max(60, Math.min(90, 60 + count * 6));
   const delay = index * 0.12;
 
   return (
@@ -59,7 +59,7 @@ const IslandNode = ({ island, count, index, onClick, className = '', style }: Is
 
       {/* Label - below image */}
       <motion.span
-        className="mt-2 text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors bg-background/50 backdrop-blur-sm px-2 py-0.5 rounded whitespace-nowrap"
+        className="mt-1 text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors bg-background/50 backdrop-blur-sm px-2 py-0.5 rounded whitespace-nowrap"
         style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

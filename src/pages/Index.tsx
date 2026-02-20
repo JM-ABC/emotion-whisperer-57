@@ -55,7 +55,7 @@ const Index = () => {
 
       {/* Header */}
       <motion.header
-        className="relative z-10 pt-6 pb-2 px-6 text-center"
+        className="relative z-10 pt-4 pb-1 px-6 text-center"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -69,10 +69,10 @@ const Index = () => {
       </motion.header>
 
       {/* Islands Map - Grid layout */}
-      <div className="relative z-10 mx-auto max-w-sm px-6 py-1">
+      <div className="relative z-10 mx-auto max-w-sm px-4 py-0">
         <div className="grid grid-cols-3 gap-y-0 gap-x-2 place-items-center">
           {/* Row 1: center - 기쁨의 섬 */}
-          <div className="col-start-2 mt-2" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
+          <div className="col-start-2 mt-1" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 2: left + right */}
@@ -86,7 +86,7 @@ const Index = () => {
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }} />
           </div>
-          <div className="mt-3" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
+          <div className="mt-2" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10 }}>
@@ -148,7 +148,7 @@ const Index = () => {
         ) : (
           <motion.button
             onClick={() => navigate('/write')}
-            className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-2xl p-4 flex items-center justify-center gap-2 font-medium shadow-lg"
+            className="w-full bg-gradient-to-r from-primary to-accent text-primary-foreground rounded-2xl p-3 flex items-center justify-center gap-2 font-medium shadow-lg"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -160,7 +160,7 @@ const Index = () => {
 
       {/* Memory count */}
       <motion.p
-        className="relative z-10 text-center text-sm text-foreground/70 font-medium mt-4 pb-4"
+        className="relative z-10 text-center text-sm text-foreground/70 font-medium mt-2 pb-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
