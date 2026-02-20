@@ -39,7 +39,7 @@ const EmotionPicker = ({ onSelect, selected }: EmotionPickerProps) => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
-              <img src={ISLAND_IMAGES[island.id]} alt={island.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen', filter: 'brightness(1.3) contrast(1.15)' }} />
+              <img src={ISLAND_IMAGES[island.id]} alt={island.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen' }} />
               <span className="text-[11px] font-medium text-secondary-foreground">
                 {island.label.replace('의 섬', '')}
               </span>

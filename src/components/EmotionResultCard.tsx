@@ -86,7 +86,7 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
             animate={{ scale: [1, 1.05, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <img src={ISLAND_IMAGES[emotionInfo.island]} alt={islandInfo.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen', filter: 'brightness(1.3) contrast(1.15)' }} />
+            <img src={ISLAND_IMAGES[emotionInfo.island]} alt={islandInfo.label} className="w-10 h-10 object-contain" style={{ mixBlendMode: 'screen' }} />
           </motion.div>
           <div>
             <p className="text-xs text-muted-foreground">
