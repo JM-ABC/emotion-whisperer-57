@@ -1,68 +1,35 @@
 
-# 섬 이미지 AI 생성으로 교체
+# 섬 배치 중앙 정렬 + 누끼컷 스타일 수정
 
-## 개요
-현재 8개 섬 이미지를 Lovable AI 이미지 생성(google/gemini-2.5-flash-image)을 사용하여 투명 배경의 고품질 아이콘으로 교체합니다. 이렇게 하면 `mix-blend-mode` 해킹 없이도 자연스럽게 표시됩니다.
+## 문제점
+1. `ISLAND_POSITIONS` 배열이 9개로 섬(8개)보다 많고, x좌표가 15%~80%로 넓게 퍼져 있어 밸런스가 맞지 않음
+2. 이미지에 `mixBlendMode: 'screen'`과 `drop-shadow`가 남아있어 네모 박스 느낌이 여전히 발생
 
-## AI 이미지 생성 계획
+## 변경 사항
 
-Edge Function을 만들어 8개 섬 이미지를 생성하고 Storage에 저장합니다.
+### 1. IslandNode.tsx - 배치 재조정
+8개 섬을 화면 중앙에 균형 있게 배치하도록 좌표를 수정합니다:
 
-### 생성할 이미지 8개
-
-| 섬 | 프롬프트 키워드 | 컨셉 |
-|-----|----------------|-------|
-| joy (기쁨) | Sunny golden floating island, warm light rays | 빛나는 황금빛 섬 |
-| peace (평온) | Calm blue ocean floating island, gentle waves | 고요한 파란 물결 섬 |
-| love (사랑) | Pink heart-shaped floating island, warm glow | 분홍빛 하트 모양 섬 |
-| hope (희망) | Green sprouting floating island, fresh leaves | 초록 새싹이 자라는 섬 |
-| sadness (슬픔) | Rainy blue floating island, rain clouds | 비 내리는 파란 섬 |
-| anger (분노) | Red volcanic floating island, lava, fire | 붉은 화산 섬 |
-| fear (불안) | Purple misty floating island, fog, swirls | 보라색 안개 섬 |
-| fatigue (피로) | Dark blue moonlit floating island, crescent moon | 달빛 어두운 섬 |
-
-## 구현 방식
-
-### 1. Edge Function 생성: `generate-island-images`
-- Lovable AI (`google/gemini-2.5-flash-image`)를 호출하여 8개 섬 이미지 생성
-- 각 이미지를 "isolated on transparent background, flat illustration style, no background" 키워드로 생성
-- 생성된 base64 이미지를 Storage 버킷에 업로드
-- 한번 호출하면 8개 모두 생성
-
-### 2. Storage 버킷 생성
-- `island-images` 버킷 생성 (public)
-- `joy.png`, `peace.png` 등 8개 파일 저장
-
-### 3. 프론트엔드 수정
-- `src/lib/island-images.ts`: Storage URL에서 이미지를 불러오도록 변경
-- `src/components/IslandNode.tsx`: `mix-blend-mode: screen` 제거 (투명 배경이므로 불필요)
-- `src/components/EmotionPicker.tsx`: 블렌딩 스타일 제거
-- `src/components/EmotionResultCard.tsx`: 블렌딩 스타일 제거
-
-## 변경 파일 요약
-
-| 파일 | 작업 |
-|------|------|
-| `supabase/functions/generate-island-images/index.ts` | 신규 - AI 이미지 생성 Edge Function |
-| DB migration | Storage 버킷 생성 + 정책 |
-| `src/lib/island-images.ts` | 수정 - Storage URL로 변경 |
-| `src/components/IslandNode.tsx` | 수정 - 블렌딩 스타일 제거 |
-| `src/components/EmotionPicker.tsx` | 수정 - 블렌딩 스타일 제거 |
-| `src/components/EmotionResultCard.tsx` | 수정 - 블렌딩 스타일 제거 |
-
-## 기술 세부사항
-
-### AI 이미지 생성 프롬프트 (각 섬 공통 형식)
 ```text
-A cute floating fantasy island, [섬별 키워드], Pixar-style 3D illustration, 
-isolated on pure black background, no frame, no border, 
-soft ambient glow, game icon style, centered composition
+현재 (불균형, 9개):          수정 후 (균형, 8개):
+50%, 10%                    50%, 8%
+20%, 25%  /  80%, 22%       30%, 25%  /  70%, 25%
+40%, 40%  /  65%, 42%       25%, 45%  /  50%, 42%  /  75%, 45%
+15%, 58%  /  55%, 60%       35%, 62%  /  65%, 62%
+35%, 78%  /  75%, 75%
 ```
 
-검은 배경에 생성하면 앱의 어두운 테마와 자연스럽게 어울리며, 필요시 `mix-blend-mode: screen`으로 완전히 투명하게 만들 수 있습니다.
+- 상단 1개, 2열 2개, 3열 3개, 하단 2개 (1-2-3-2 다이아몬드 배치)
+- x좌표를 25%~75% 범위로 좁혀 중앙에 집중
+- 불필요한 9번째 좌표 제거
 
-### Edge Function 호출 흐름
-1. 관리자가 Edge Function을 한번 호출
-2. 8개 섬에 대해 순차적으로 AI 이미지 생성
-3. 각 이미지를 Storage에 업로드
-4. 프론트엔드는 Storage public URL에서 이미지를 불러옴
+### 2. IslandNode.tsx - 누끼컷 스타일
+- `mixBlendMode: 'screen'` 제거 (AI 생성 이미지는 검은 배경이므로 불필요하거나 오히려 방해)
+- `drop-shadow` 필터를 제거하거나 더 은은하게 변경
+- 이미지가 배경 없이 깔끔하게 떠 있는 느낌으로 처리
+
+## 수정 파일
+
+| 파일 | 변경 |
+|------|------|
+| `src/components/IslandNode.tsx` | ISLAND_POSITIONS를 8개로 수정 (1-2-3-2 배치), 이미지 스타일에서 mixBlendMode/drop-shadow 제거 |
