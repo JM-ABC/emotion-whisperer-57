@@ -17,7 +17,7 @@ interface IslandNodeProps {
 }
 
 const IslandNode = ({ island, count, index, onClick, className = '', style }: IslandNodeProps) => {
-  const size = Math.max(90, Math.min(140, 90 + count * 12));
+  const size = Math.max(70, Math.min(110, 70 + count * 8));
   const delay = index * 0.12;
 
   return (

@@ -55,7 +55,7 @@ const Index = () => {
 
       {/* Header */}
       <motion.header
-        className="relative z-10 pt-12 pb-6 px-6 text-center"
+        className="relative z-10 pt-6 pb-2 px-6 text-center"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -69,10 +69,10 @@ const Index = () => {
       </motion.header>
 
       {/* Islands Map - Grid layout */}
-      <div className="relative z-10 mx-auto max-w-sm px-6 py-4">
+      <div className="relative z-10 mx-auto max-w-sm px-6 py-1">
         <div className="grid grid-cols-3 gap-y-0 gap-x-2 place-items-center">
           {/* Row 1: center - 기쁨의 섬 */}
-          <div className="col-start-2 mt-8" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
+          <div className="col-start-2 mt-2" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 2: left + right */}
@@ -86,7 +86,7 @@ const Index = () => {
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }} />
           </div>
-          <div className="mt-8" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
+          <div className="mt-3" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10 }}>
@@ -105,7 +105,7 @@ const Index = () => {
       {/* Memory Orb Jar */}
       {memories.length > 0 && (
         <motion.div
-          className="relative z-10 mx-6 mt-2"
+          className="relative z-10 mx-6 mt-1"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0, duration: 0.5 }}
@@ -127,7 +127,7 @@ const Index = () => {
 
       {/* Today's Status */}
       <motion.div
-        className="relative z-10 mx-6 mt-4"
+        className="relative z-10 mx-6 mt-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.5 }}
