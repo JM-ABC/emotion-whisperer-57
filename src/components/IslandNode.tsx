@@ -48,7 +48,7 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
           style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
         />
         {count > 0 && (
-          <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
+          <span className="absolute -top-1 -right-1 z-50 bg-primary text-primary-foreground text-[11px] font-bold rounded-full w-6 h-6 flex items-center justify-center shadow-lg ring-2 ring-background">
             {count}
           </span>
         )}
