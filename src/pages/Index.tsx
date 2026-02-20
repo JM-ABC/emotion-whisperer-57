@@ -72,7 +72,7 @@ const Index = () => {
       <div className="relative z-10 mx-auto max-w-sm px-6 py-4">
         <div className="grid grid-cols-3 gap-y-0 gap-x-2 place-items-center">
           {/* Row 1: center - 기쁨의 섬 */}
-          <div className="col-start-2 mt-4" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
+          <div className="col-start-2 mt-8" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 2: left + right */}
@@ -86,7 +86,7 @@ const Index = () => {
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }} />
           </div>
-          <div className="mt-5" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
+          <div className="mt-8" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }}>
             <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10 }}>

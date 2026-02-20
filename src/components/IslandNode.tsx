@@ -24,7 +24,7 @@ const IslandNode = ({ island, count, index, onClick, className = '', style }: Is
     <motion.button
       onClick={onClick}
       className={`relative group cursor-pointer focus:outline-none flex flex-col items-center ${className}`}
-      style={style}
+      style={{ ...style, zIndex: count > 0 ? 50 : 1 }}
       initial={{ opacity: 0, scale: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay, duration: 0.5, type: 'spring', stiffness: 120 }}
