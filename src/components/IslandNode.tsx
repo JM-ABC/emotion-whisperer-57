@@ -15,19 +15,19 @@ interface IslandNodeProps {
 }
 
 const ISLAND_POSITIONS = [
-  { x: '50%', y: '6%' },
-  { x: '35%', y: '22%' },
-  { x: '65%', y: '22%' },
-  { x: '25%', y: '40%' },
-  { x: '50%', y: '38%' },
-  { x: '75%', y: '40%' },
-  { x: '38%', y: '58%' },
-  { x: '62%', y: '58%' },
+  { x: '50%', y: '5%' },
+  { x: '32%', y: '22%' },
+  { x: '62%', y: '22%' },
+  { x: '22%', y: '42%' },
+  { x: '47%', y: '40%' },
+  { x: '72%', y: '42%' },
+  { x: '35%', y: '60%' },
+  { x: '60%', y: '60%' },
 ];
 
 const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
   const pos = ISLAND_POSITIONS[index];
-  const size = Math.max(80, Math.min(130, 80 + count * 10));
+  const size = Math.max(100, Math.min(160, 100 + count * 12));
   const delay = index * 0.15;
 
   return (
@@ -58,7 +58,7 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
           src={ISLAND_IMAGES[island.id]}
           alt={island.label}
           className="w-full h-full object-contain"
-          style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))' }}
+          style={{ filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.3))', mixBlendMode: 'screen' }}
         />
         {count > 0 && (
           <span className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
@@ -69,12 +69,12 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
 
       {/* Label */}
       <motion.div
-        className="absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap"
+        className="absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap z-50"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: delay + 0.3 }}
       >
-        <span className="text-xs font-medium text-foreground/70 group-hover:text-foreground transition-colors" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
+        <span className="text-xs font-medium text-foreground/70 group-hover:text-foreground transition-colors bg-background/60 backdrop-blur-sm px-2 py-0.5 rounded" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
           {island.label}
         </span>
       </motion.div>
