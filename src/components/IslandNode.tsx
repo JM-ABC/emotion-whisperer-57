@@ -15,14 +15,14 @@ interface IslandNodeProps {
 }
 
 const ISLAND_POSITIONS = [
-  { x: '50%', y: '8%' },
-  { x: '30%', y: '25%' },
-  { x: '70%', y: '25%' },
-  { x: '25%', y: '45%' },
-  { x: '50%', y: '42%' },
-  { x: '75%', y: '45%' },
-  { x: '35%', y: '62%' },
-  { x: '65%', y: '62%' },
+  { x: '50%', y: '6%' },
+  { x: '35%', y: '22%' },
+  { x: '65%', y: '22%' },
+  { x: '25%', y: '40%' },
+  { x: '50%', y: '38%' },
+  { x: '75%', y: '40%' },
+  { x: '38%', y: '58%' },
+  { x: '62%', y: '58%' },
 ];
 
 const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
@@ -69,12 +69,12 @@ const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
 
       {/* Label */}
       <motion.div
-        className="absolute -bottom-7 left-1/2 -translate-x-1/2 whitespace-nowrap"
+        className="absolute -bottom-9 left-1/2 -translate-x-1/2 whitespace-nowrap"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: delay + 0.3 }}
       >
-        <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+        <span className="text-xs font-medium text-foreground/70 group-hover:text-foreground transition-colors" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}>
           {island.label}
         </span>
       </motion.div>

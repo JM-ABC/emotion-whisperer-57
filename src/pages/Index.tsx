@@ -69,7 +69,7 @@ const Index = () => {
       </motion.header>
 
       {/* Islands Map */}
-      <div className="relative z-10 mx-4 h-[60vh] min-h-[400px]">
+      <div className="relative z-10 mx-auto max-w-md px-4 h-[60vh] min-h-[400px]">
         {ISLANDS.map((island, index) => (
           <IslandNode
             key={island.id}
@@ -89,7 +89,7 @@ const Index = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0, duration: 0.5 }}
         >
-          <p className="text-xs text-muted-foreground mb-3 text-center">나의 기억 구슬</p>
+          <p className="text-sm text-foreground/70 font-medium mb-3 text-center" style={{ textShadow: '0 1px 4px rgba(0,0,0,0.5)' }}>나의 기억 구슬</p>
           <OrbJar
             memories={memories}
             maxDisplay={10}
@@ -139,7 +139,7 @@ const Index = () => {
 
       {/* Memory count */}
       <motion.p
-        className="relative z-10 text-center text-xs text-muted-foreground mt-4 pb-4"
+        className="relative z-10 text-center text-sm text-foreground/70 font-medium mt-4 pb-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
