@@ -72,26 +72,28 @@ const Index = () => {
       <div className="relative z-10 mx-auto max-w-sm px-6 py-4">
         <div className="grid grid-cols-3 gap-y-2 gap-x-2 place-items-center">
           {/* Row 1: center */}
-          <div className="col-start-2">
-            <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} />
+          <div className="col-start-2" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }}>
+            <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 2: left + right */}
-          <div className="col-start-1">
-            <IslandNode island={ISLANDS[1]} count={getCount(ISLANDS[1].id)} index={1} onClick={() => navigate('/insight')} />
+          <div className="col-start-1" style={{ zIndex: getCount(ISLANDS[1].id) > 0 ? 20 : 10 }}>
+            <IslandNode island={ISLANDS[1]} count={getCount(ISLANDS[1].id)} index={1} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[1].id) > 0 ? 20 : 10 }} />
           </div>
-          <div className="col-start-3">
-            <IslandNode island={ISLANDS[2]} count={getCount(ISLANDS[2].id)} index={2} onClick={() => navigate('/insight')} />
+          <div className="col-start-3" style={{ zIndex: getCount(ISLANDS[2].id) > 0 ? 20 : 10 }}>
+            <IslandNode island={ISLANDS[2]} count={getCount(ISLANDS[2].id)} index={2} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[2].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 3: all three */}
-          <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} />
-          <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} />
-          <IslandNode island={ISLANDS[5]} count={getCount(ISLANDS[5].id)} index={5} onClick={() => navigate('/insight')} />
+          {[3, 4, 5].map(i => (
+            <div key={ISLANDS[i].id} style={{ zIndex: getCount(ISLANDS[i].id) > 0 ? 20 : 10 }}>
+              <IslandNode island={ISLANDS[i]} count={getCount(ISLANDS[i].id)} index={i} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[i].id) > 0 ? 20 : 10 }} />
+            </div>
+          ))}
           {/* Row 4: left-center + right-center */}
-          <div className="col-start-1 col-span-1 justify-self-end mr-2">
-            <IslandNode island={ISLANDS[6]} count={getCount(ISLANDS[6].id)} index={6} onClick={() => navigate('/insight')} />
+          <div className="col-start-1 col-span-1 justify-self-end mr-2" style={{ zIndex: getCount(ISLANDS[6].id) > 0 ? 20 : 10 }}>
+            <IslandNode island={ISLANDS[6]} count={getCount(ISLANDS[6].id)} index={6} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[6].id) > 0 ? 20 : 10 }} />
           </div>
-          <div className="col-start-3 col-span-1 justify-self-start ml-2">
-            <IslandNode island={ISLANDS[7]} count={getCount(ISLANDS[7].id)} index={7} onClick={() => navigate('/insight')} />
+          <div className="col-start-3 col-span-1 justify-self-start ml-2" style={{ zIndex: getCount(ISLANDS[7].id) > 0 ? 20 : 10 }}>
+            <IslandNode island={ISLANDS[7]} count={getCount(ISLANDS[7].id)} index={7} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[7].id) > 0 ? 20 : 10 }} />
           </div>
         </div>
       </div>
