@@ -12,16 +12,19 @@ interface IslandNodeProps {
   count: number;
   index: number;
   onClick: () => void;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
-const IslandNode = ({ island, count, index, onClick }: IslandNodeProps) => {
+const IslandNode = ({ island, count, index, onClick, className = '', style }: IslandNodeProps) => {
   const size = Math.max(90, Math.min(140, 90 + count * 12));
   const delay = index * 0.12;
 
   return (
     <motion.button
       onClick={onClick}
-      className="relative group cursor-pointer focus:outline-none flex flex-col items-center"
+      className={`relative group cursor-pointer focus:outline-none flex flex-col items-center ${className}`}
+      style={style}
       initial={{ opacity: 0, scale: 0, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay, duration: 0.5, type: 'spring', stiffness: 120 }}
