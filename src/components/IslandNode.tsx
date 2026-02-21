@@ -31,7 +31,7 @@ const IslandNode = ({ island, count, index, onClick, className = '', style }: Is
     >
       {/* Glow */}
       <div
-        className={`absolute rounded-full bg-island-${island.id} opacity-20 blur-xl animate-glow-pulse group-hover:opacity-40 transition-opacity`}
+        className={`absolute rounded-full bg-island-${island.id} opacity-20 blur-xl animate-glow-pulse group-hover:opacity-60 group-active:opacity-80 transition-all duration-300`}
         style={{ width: size + 20, height: size + 20, left: '50%', top: '50%', transform: 'translate(-50%, -60%)' }}
       />
 
@@ -41,8 +41,8 @@ const IslandNode = ({ island, count, index, onClick, className = '', style }: Is
         style={{ width: size, height: size }}
         animate={{ y: [0, index % 2 === 0 ? -8 : -5, 0] }}
         transition={{ duration: index % 2 === 0 ? 5 : 7, repeat: Infinity, ease: 'easeInOut' }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.15 }}
+        whileTap={{ scale: 0.9 }}
       >
         <img
           src={ISLAND_IMAGES[island.id]}
@@ -59,7 +59,7 @@ const IslandNode = ({ island, count, index, onClick, className = '', style }: Is
 
       {/* Label - below image */}
       <motion.span
-        className="mt-1 text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors bg-background/50 backdrop-blur-sm px-2 py-0.5 rounded whitespace-nowrap"
+        className="mt-1 text-xs font-medium text-foreground/80 group-hover:text-foreground group-hover:scale-105 transition-all duration-300 bg-background/50 backdrop-blur-sm px-2 py-0.5 rounded whitespace-nowrap"
         style={{ textShadow: '0 1px 4px rgba(0,0,0,0.6)' }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
