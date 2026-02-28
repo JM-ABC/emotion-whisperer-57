@@ -11,6 +11,7 @@ import { saveMemory, loadMemories, getInsights } from '@/lib/memory-store';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { track, identify } from '@/hooks/useAmplitude';
+import { updateStreak } from '@/lib/user-stats';
 
 type Phase = 'write' | 'analyzing' | 'confirm' | 'saved' | 'mission';
 
@@ -83,10 +84,12 @@ const WritePage = () => {
     const allMemories = loadMemories();
     const insights = getInsights(allMemories);
     const topIsland = [...insights].sort((a, b) => b.count - a.count)[0];
+    const streakDays = updateStreak();
     identify({
       total_memories: allMemories.length,
       top_island: topIsland?.island || 'none',
       last_active_date: new Date().toISOString().slice(0, 10),
+      streak_days: streakDays,
     });
 
     setSavedEmotion(emotion);

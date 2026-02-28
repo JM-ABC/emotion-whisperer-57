@@ -8,7 +8,8 @@ import { loadMemories, getInsights } from '@/lib/memory-store';
 import { ISLANDS } from '@/lib/emotions';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { track } from '@/hooks/useAmplitude';
+import { track, identify } from '@/hooks/useAmplitude';
+import { recordCoachingSession } from '@/lib/user-stats';
 
 interface CoachingResult {
   coaching_message: string;
@@ -74,6 +75,13 @@ const CoachingPage = () => {
 
       setResult(data as CoachingResult);
       track('coaching_completed', { persona: selectedPersona, has_pattern_data: patternSummary.length > 0 });
+
+      // Update coaching user properties
+      const stats = recordCoachingSession(selectedPersona);
+      identify({
+        preferred_persona: stats.preferred_persona,
+        total_coaching_sessions: stats.total_coaching_sessions,
+      });
     } catch (e: any) {
       console.error('Coaching failed:', e);
       track('error_occurred', { error_type: 'coaching', error_message: e.message || 'unknown' });

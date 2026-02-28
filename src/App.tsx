@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,12 +10,18 @@ import InsightPage from "./pages/InsightPage";
 import CoachingPage from "./pages/CoachingPage";
 import NotFound from "./pages/NotFound";
 import BottomNav from "./components/BottomNav";
-import { useAmplitude } from "./hooks/useAmplitude";
+import { useAmplitude, identify } from "./hooks/useAmplitude";
+import { initFirstUseDate, getDaysSinceFirstUse } from "./lib/user-stats";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   useAmplitude();
+
+  useEffect(() => {
+    initFirstUseDate();
+    identify({ days_since_first_use: getDaysSinceFirstUse() });
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
