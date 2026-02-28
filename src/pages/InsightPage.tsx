@@ -18,6 +18,10 @@ const InsightPage = () => {
   const [tab, setTab] = useState<Tab>('chart');
   const allMemories = loadMemories();
 
+  useEffect(() => {
+    track('page_viewed', { page_name: 'insight' });
+  }, []);
+
   const filteredMemories = useMemo(() => {
     const now = new Date();
     return allMemories.filter((m) => {
