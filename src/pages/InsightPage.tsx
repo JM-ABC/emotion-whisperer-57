@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
@@ -6,6 +6,7 @@ import { loadMemories, getInsights } from '@/lib/memory-store';
 import { ISLANDS, type Island } from '@/lib/emotions';
 import EmotionCalendar from '@/components/EmotionCalendar';
 import { useToast } from '@/hooks/use-toast';
+import { track } from '@/hooks/useAmplitude';
 
 type Period = 'daily' | 'weekly' | 'monthly';
 type Tab = 'chart' | 'calendar';
@@ -53,16 +54,16 @@ const InsightPage = () => {
       <div className="max-w-lg mx-auto px-4 pt-6 space-y-6">
         {/* Tab selector: Chart vs Calendar */}
         <div className="flex bg-card rounded-xl p-1 border border-border">
-          <button
-            onClick={() => setTab('chart')}
+           <button
+            onClick={() => { setTab('chart'); track('insight_tab_changed', { tab: 'chart' }); }}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
               tab === 'chart' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             📊 분포
           </button>
-          <button
-            onClick={() => setTab('calendar')}
+           <button
+            onClick={() => { setTab('calendar'); track('insight_tab_changed', { tab: 'calendar' }); }}
             className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
               tab === 'calendar' ? 'bg-primary text-primary-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
@@ -78,6 +79,7 @@ const InsightPage = () => {
               memories={allMemories}
               onDayClick={(memory) => {
                 const island = ISLANDS.find((i) => i.id === memory.island)!;
+                track('memory_detail_viewed', { emotion: memory.emotion, island: memory.island });
                 toast({
                   title: `${island.emoji} ${island.label}`,
                   description: memory.content,
@@ -92,7 +94,7 @@ const InsightPage = () => {
               {(['daily', 'weekly', 'monthly'] as Period[]).map((p) => (
                 <button
                   key={p}
-                  onClick={() => setPeriod(p)}
+                  onClick={() => { setPeriod(p); track('insight_period_changed', { period: p }); }}
                   className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${
                     period === p
                       ? 'bg-primary text-primary-foreground shadow-sm'

@@ -8,6 +8,7 @@ import { ISLANDS, type CoreMemory, getEmotionById } from '@/lib/emotions';
 import { loadMemories, getInsights, getTodayMemory } from '@/lib/memory-store';
 import { PenLine } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { track } from '@/hooks/useAmplitude';
 
 const ISLAND_HSL: Record<string, string> = {
   joy: 'var(--island-joy)',
@@ -31,10 +32,16 @@ const Index = () => {
 
   useEffect(() => {
     setMemories(loadMemories());
+    track('page_viewed', { page_name: 'home' });
   }, []);
 
   const getCount = (islandId: string) =>
     insights.find(i => i.island === islandId)?.count ?? 0;
+
+  const handleIslandClick = (islandId: string) => {
+    track('island_clicked', { island: islandId, memory_count: getCount(islandId) });
+    navigate('/insight');
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden pb-20">
@@ -73,31 +80,31 @@ const Index = () => {
         <div className="grid grid-cols-3 gap-y-0 gap-x-2 place-items-center">
           {/* Row 1: center - 기쁨의 섬 */}
           <div className="col-start-2 mt-1" style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10, marginLeft: 4 }}>
-            <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[0]} count={getCount(ISLANDS[0].id)} index={0} onClick={() => handleIslandClick(ISLANDS[0].id)} style={{ zIndex: getCount(ISLANDS[0].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 2: left + right */}
           <div className="col-start-1 mt-1" style={{ zIndex: getCount(ISLANDS[1].id) > 0 ? 20 : 10, marginTop: -4, marginLeft: -6 }}>
-            <IslandNode island={ISLANDS[1]} count={getCount(ISLANDS[1].id)} index={1} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[1].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[1]} count={getCount(ISLANDS[1].id)} index={1} onClick={() => handleIslandClick(ISLANDS[1].id)} style={{ zIndex: getCount(ISLANDS[1].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="col-start-3 mt-1" style={{ zIndex: getCount(ISLANDS[2].id) > 0 ? 20 : 10, marginTop: 6, marginRight: -6 }}>
-            <IslandNode island={ISLANDS[2]} count={getCount(ISLANDS[2].id)} index={2} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[2].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[2]} count={getCount(ISLANDS[2].id)} index={2} onClick={() => handleIslandClick(ISLANDS[2].id)} style={{ zIndex: getCount(ISLANDS[2].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 3: 희망, 슬픔(아래로), 분노 */}
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10, marginLeft: -4 }}>
-            <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[3]} count={getCount(ISLANDS[3].id)} index={3} onClick={() => handleIslandClick(ISLANDS[3].id)} style={{ zIndex: getCount(ISLANDS[3].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10, marginTop: -3, marginLeft: 3 }}>
-            <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[4]} count={getCount(ISLANDS[4].id)} index={4} onClick={() => handleIslandClick(ISLANDS[4].id)} style={{ zIndex: getCount(ISLANDS[4].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="mt-2" style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10, marginRight: -4 }}>
-            <IslandNode island={ISLANDS[5]} count={getCount(ISLANDS[5].id)} index={5} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[5]} count={getCount(ISLANDS[5].id)} index={5} onClick={() => handleIslandClick(ISLANDS[5].id)} style={{ zIndex: getCount(ISLANDS[5].id) > 0 ? 20 : 10 }} />
           </div>
           {/* Row 4: left-center + right-center */}
           <div className="col-start-1 col-span-1 justify-self-end mr-2 mt-1" style={{ zIndex: getCount(ISLANDS[6].id) > 0 ? 20 : 10, marginTop: 4, marginLeft: 5 }}>
-            <IslandNode island={ISLANDS[6]} count={getCount(ISLANDS[6].id)} index={6} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[6].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[6]} count={getCount(ISLANDS[6].id)} index={6} onClick={() => handleIslandClick(ISLANDS[6].id)} style={{ zIndex: getCount(ISLANDS[6].id) > 0 ? 20 : 10 }} />
           </div>
           <div className="col-start-3 col-span-1 justify-self-start ml-2 mt-1" style={{ zIndex: getCount(ISLANDS[7].id) > 0 ? 20 : 10, marginTop: -2, marginRight: 5 }}>
-            <IslandNode island={ISLANDS[7]} count={getCount(ISLANDS[7].id)} index={7} onClick={() => navigate('/insight')} style={{ zIndex: getCount(ISLANDS[7].id) > 0 ? 20 : 10 }} />
+            <IslandNode island={ISLANDS[7]} count={getCount(ISLANDS[7].id)} index={7} onClick={() => handleIslandClick(ISLANDS[7].id)} style={{ zIndex: getCount(ISLANDS[7].id) > 0 ? 20 : 10 }} />
           </div>
         </div>
       </div>
@@ -116,6 +123,7 @@ const Index = () => {
             maxDisplay={10}
             onOrbClick={(memory) => {
               const info = getEmotionById(memory.emotion);
+              track('orb_clicked', { emotion: memory.emotion, island: memory.island });
               toast({
                 title: `${info.emoji} ${info.label}`,
                 description: memory.content,

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles } from 'lucide-react';
@@ -7,9 +7,10 @@ import EmotionResultCard from '@/components/EmotionResultCard';
 import OrbSaveAnimation from '@/components/OrbSaveAnimation';
 import EmotionMission from '@/components/EmotionMission';
 import { type Emotion, type Island, getEmotionById } from '@/lib/emotions';
-import { saveMemory } from '@/lib/memory-store';
+import { saveMemory, loadMemories, getInsights } from '@/lib/memory-store';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { track, identify } from '@/hooks/useAmplitude';
 
 type Phase = 'write' | 'analyzing' | 'confirm' | 'saved' | 'mission';
 
@@ -36,6 +37,7 @@ const WritePage = () => {
   const { toast } = useToast();
   const [phase, setPhase] = useState<Phase>('write');
   const [diary, setDiary] = useState('');
+  const diaryStarted = useRef(false);
   const [aiResult, setAiResult] = useState<AIResult | null>(null);
   const [savedEmotion, setSavedEmotion] = useState<Emotion | null>(null);
   const [savedIsland, setSavedIsland] = useState<Island | null>(null);
@@ -47,6 +49,7 @@ const WritePage = () => {
     }
 
     setPhase('analyzing');
+    track('diary_submitted', { char_count: diary.trim().length, word_count: diary.trim().split(/\s+/).length });
 
     try {
       const { data, error } = await supabase.functions.invoke('analyze-emotion', {
@@ -56,10 +59,13 @@ const WritePage = () => {
       if (error) throw new Error(error.message);
       if (data.error) throw new Error(data.error);
 
-      setAiResult(data as AIResult);
+      const aiData = data as AIResult;
+      setAiResult(aiData);
+      track('emotion_analyzed', { emotion: aiData.emotion, island: aiData.island, core_memory_length: aiData.core_memory.length });
       setPhase('confirm');
     } catch (e: any) {
       console.error('AI analysis failed:', e);
+      track('error_occurred', { error_type: 'analyze', error_message: e.message || 'unknown' });
       toast({
         title: '감정 분석에 실패했어요',
         description: e.message || '다시 시도해주세요',
@@ -71,12 +77,25 @@ const WritePage = () => {
 
   const handleSave = (emotion: Emotion, island: Island, coreMemory: string) => {
     saveMemory(coreMemory, emotion);
+    track('memory_saved', { emotion, island });
+
+    // Update user properties
+    const allMemories = loadMemories();
+    const insights = getInsights(allMemories);
+    const topIsland = [...insights].sort((a, b) => b.count - a.count)[0];
+    identify({
+      total_memories: allMemories.length,
+      top_island: topIsland?.island || 'none',
+      last_active_date: new Date().toISOString().slice(0, 10),
+    });
+
     setSavedEmotion(emotion);
     setSavedIsland(island);
     setPhase('saved');
   };
 
   const handleOrbComplete = () => {
+    track('mission_viewed', { island: savedIsland });
     setPhase('mission');
   };
 
@@ -170,7 +189,13 @@ const WritePage = () => {
               </label>
               <textarea
                 value={diary}
-                onChange={(e) => setDiary(e.target.value)}
+                onChange={(e) => {
+                  if (!diaryStarted.current && e.target.value.length > 0) {
+                    diaryStarted.current = true;
+                    track('diary_started', { char_count: 0 });
+                  }
+                  setDiary(e.target.value);
+                }}
                 placeholder="오늘 있었던 일, 느꼈던 감정을 편하게 적어주세요..."
                 rows={8}
                 className="w-full bg-card border border-border rounded-xl p-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary/50 resize-none text-sm leading-relaxed"

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles, MessageCircle, Loader2 } from 'lucide-react';
@@ -8,6 +8,7 @@ import { loadMemories, getInsights } from '@/lib/memory-store';
 import { ISLANDS } from '@/lib/emotions';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { track } from '@/hooks/useAmplitude';
 
 interface CoachingResult {
   coaching_message: string;
@@ -21,6 +22,10 @@ const CoachingPage = () => {
   const [persona, setPersona] = useState<Persona | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CoachingResult | null>(null);
+
+  useEffect(() => {
+    track('page_viewed', { page_name: 'coaching' });
+  }, []);
 
   const memories = loadMemories();
   const weekMemories = useMemo(() => {
@@ -45,6 +50,7 @@ const CoachingPage = () => {
     .join(', ');
 
   const handleCoach = async (selectedPersona: Persona) => {
+    track('coaching_persona_selected', { persona: selectedPersona });
     setPersona(selectedPersona);
     setLoading(true);
     setResult(null);
@@ -67,8 +73,10 @@ const CoachingPage = () => {
       if (data.error) throw new Error(data.error);
 
       setResult(data as CoachingResult);
+      track('coaching_completed', { persona: selectedPersona, has_pattern_data: patternSummary.length > 0 });
     } catch (e: any) {
       console.error('Coaching failed:', e);
+      track('error_occurred', { error_type: 'coaching', error_message: e.message || 'unknown' });
       toast({
         title: '코칭을 불러오지 못했어요',
         description: e.message || '다시 시도해주세요',
@@ -196,7 +204,7 @@ const CoachingPage = () => {
 
               {/* Retry button */}
               <motion.button
-                onClick={() => persona && handleCoach(persona)}
+                onClick={() => { if (persona) { track('coaching_retried', { persona }); handleCoach(persona); } }}
                 className="w-full py-3 rounded-xl bg-card border border-border text-foreground text-sm font-medium flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}

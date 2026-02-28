@@ -4,6 +4,7 @@ import { Sparkles, Edit3 } from 'lucide-react';
 import { type Emotion, type Island, getEmotionById, getIslandById } from '@/lib/emotions';
 import { ISLAND_IMAGES } from '@/lib/island-images';
 import EmotionPicker from './EmotionPicker';
+import { track } from '@/hooks/useAmplitude';
 
 interface EmotionResult {
   emotion: Emotion;
@@ -117,7 +118,10 @@ const EmotionResultCard = ({ result, onSave }: EmotionResultCardProps) => {
         </motion.div>
       ) : (
         <button
-          onClick={() => setEditing(true)}
+          onClick={() => {
+            track('emotion_edited', { original_emotion: result.emotion, new_emotion: selectedEmotion });
+            setEditing(true);
+          }}
           className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors mx-auto"
         >
           <Edit3 size={14} />
