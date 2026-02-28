@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { type Island } from '@/lib/emotions';
 import { getRandomMission, type Mission } from '@/lib/missions';
+import { track } from '@/hooks/useAmplitude';
 
 interface EmotionMissionProps {
   island: Island;
@@ -61,7 +62,7 @@ const EmotionMission = ({ island, onDismiss }: EmotionMissionProps) => {
       </div>
 
       <motion.button
-        onClick={onDismiss}
+        onClick={() => { track('mission_dismissed', { island }); onDismiss(); }}
         className="relative z-10 flex items-center gap-2 px-6 py-3 rounded-xl bg-card border border-border text-foreground text-sm font-medium"
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

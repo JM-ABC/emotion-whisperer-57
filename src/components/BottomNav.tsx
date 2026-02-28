@@ -1,6 +1,7 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { Home, PenLine, BarChart3, Sparkles } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { track } from '@/hooks/useAmplitude';
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: '홈' },
@@ -23,6 +24,7 @@ const BottomNav = () => {
               key={to}
               to={to}
               className="relative flex flex-col items-center gap-0.5 py-1 px-3"
+              onClick={() => track('nav_item_clicked', { destination: to === '/' ? 'home' : to.slice(1) })}
             >
               {isActive && (
                 <motion.div
