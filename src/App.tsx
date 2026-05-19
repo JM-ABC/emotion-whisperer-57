@@ -3,8 +3,9 @@ import { Toaster } from "@/components/tds-adapter";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/tds-adapter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
+import IntroPage from "./pages/IntroPage";
 import WritePage from "./pages/WritePage";
 import InsightPage from "./pages/InsightPage";
 import CoachingPage from "./pages/CoachingPage";
@@ -15,6 +16,31 @@ import { useAmplitude, identify } from "./hooks/useAmplitude";
 import { initFirstUseDate, getDaysSinceFirstUse } from "./lib/user-stats";
 
 const queryClient = new QueryClient();
+
+export const RootPage = () => {
+  if (!localStorage.getItem('intro_seen')) {
+    return <Navigate to="/intro" replace />;
+  }
+  return <Index />;
+};
+
+const AppLayout = () => {
+  const location = useLocation();
+  return (
+    <div className="max-w-lg mx-auto min-h-screen relative">
+      <Routes>
+        <Route path="/"        element={<RootPage />} />
+        <Route path="/intro"   element={<IntroPage />} />
+        <Route path="/write"   element={<WritePage />} />
+        <Route path="/insight" element={<InsightPage />} />
+        <Route path="/coaching" element={<CoachingPage />} />
+        <Route path="/unlink"  element={<UnlinkCallback />} />
+        <Route path="*"        element={<NotFound />} />
+      </Routes>
+      {location.pathname !== '/intro' && <BottomNav />}
+    </div>
+  );
+};
 
 const App = () => {
   useAmplitude();
@@ -30,22 +56,11 @@ const App = () => {
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <div className="max-w-lg mx-auto min-h-screen relative">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/write" element={<WritePage />} />
-              <Route path="/insight" element={<InsightPage />} />
-              <Route path="/coaching" element={<CoachingPage />} />
-              <Route path="/unlink" element={<UnlinkCallback />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            <BottomNav />
-          </div>
+          <AppLayout />
         </BrowserRouter>
       </TooltipProvider>
     </QueryClientProvider>
   );
 };
-
 
 export default App;
