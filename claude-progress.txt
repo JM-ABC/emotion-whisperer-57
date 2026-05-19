@@ -1,0 +1,13 @@
+Scaffold created: granite.config.ts, feature_list.json, claude-progress.txt
+Started harness-init conversion for AppsInToss.
+Updated: unified app name to Korean in index.html
+Added: supabase/functions/exchange-token (token exchange stub)
+
+[2026-05-19] Session 2 작업 내용:
+- Fixed: Index.tsx 커스텀 <header> 제거 → CLAUDE.md "NEVER custom top header" 위반 해소
+- Fixed: index.html 앱 이름 "코어 메모리 — 감정 동반자" → "코어 메모리" (granite.config.ts와 일치)
+- Updated: feature_list.json에 완료/예정 기능 목록 정리
+
+완료된 기능: harness-init, home-screen, write-page, insight-page, coaching-page,
+             tds-adapter, login, amplitude
+다음 작업: intro-screen (온보딩) 또는 ads (광고 연동)

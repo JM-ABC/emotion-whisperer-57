@@ -108,6 +108,39 @@ supabase/functions/    # Edge Functions
 
 ---
 
+## AppsInToss (토스 미니앱) 전환 안내
+
+이 리포지토리는 AppsInToss(토스 미니앱)로 전환하기 위한 초기 스캐폴드가 추가되어 있습니다. 자동 변환으로 다음 항목을 적용했습니다:
+
+- `index.html`의 `viewport`에 `user-scalable=no` 추가 (핀치 줌 비활성화)
+- `granite.config.ts` 추가 및 `navigationBar` 설정 (백/홈 버튼)
+- `supabase/functions/exchange-token` 서버리스 템플릿 추가 (토큰 교환용)
+- `scripts/harness-validate.cjs` 자동 검증 스크립트 추가
+
+추가로 수행해야 할 작업(수동):
+
+1. TDS 적용: 비게임 미니앱은 `@toss/tds-mobile` 사용이 권장/필수입니다. 현재는 `shadcn/ui` 기반 컴포넌트가 사용중이므로, UI를 TDS 토큰/컴포넌트로 점진적으로 교체하세요.
+2. Toss OAuth 토큰 교환: `supabase/functions/exchange-token` 내부의 TODO를 실제 Toss OAuth 토큰 교환(mTLS 또는 client_secret 사용)으로 구현하고, 비밀값은 환경 변수로 제공하세요.
+3. QA & 심사 검증: `npm run harness-validate`로 자동 검증을 실행하고, `/appintoss-nongame-launch-checklist` 규칙을 수동으로 확인하세요.
+
+개발용 명령 예시:
+
+```bash
+# 의존성 설치 (추가된 TDS 패키지 포함)
+npm install
+
+# 개발 서버
+npm run dev
+
+# 자동 검증
+npm run harness-validate
+```
+
+보안/배포 참고:
+- Toss OAuth와 관련된 모든 비밀값은 서버(Edge Function)에만 저장하세요. 클라이언트에 토큰을 직접 노출하면 반려 사유가 됩니다.
+- 출시 전 `CLAUDE.md`의 NEVER/ALWAYS 규칙을 반드시 재검증하세요.
+
+
 <p align="center">
   Built with ❤️ using <a href="https://lovable.dev">Lovable</a>
 </p>

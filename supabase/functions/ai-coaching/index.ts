@@ -51,7 +51,12 @@ Here is the user's recent emotion pattern:
 ${patternSummary}
 
 Recent memories:
-${memories?.map((m: any) => `- ${m.emotion}: "${m.content}"`).join('\n') || 'No recent memories'}`;
+${memories
+      ?.map((m: unknown) => {
+        const memory = m as { emotion?: string; content?: string };
+        return `- ${memory.emotion ?? 'unknown'}: "${memory.content ?? ''}"`;
+      })
+      .join('\n') || 'No recent memories'}`;
 
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",

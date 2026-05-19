@@ -2,14 +2,36 @@ import { CoreMemory, Emotion, Island, EmotionInsight, getEmotionById } from './e
 
 const STORAGE_KEY = 'core-memories';
 
+const parseMemory = (value: unknown): CoreMemory | null => {
+  if (typeof value !== 'object' || value === null) return null;
+  const record = value as Record<string, unknown>;
+  const emotion = record.emotion as Emotion | undefined;
+  const island = record.island as Island | undefined;
+  const content = record.content as string | undefined;
+  const id = record.id as string | undefined;
+  const createdAt = record.createdAt;
+  const updatedAt = record.updatedAt;
+
+  if (!emotion || !island || !content || !id) return null;
+
+  return {
+    id,
+    content,
+    emotion,
+    island,
+    createdAt: new Date(String(createdAt)),
+    updatedAt: new Date(String(updatedAt)),
+  };
+};
+
 export const loadMemories = (): CoreMemory[] => {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return [];
-  return JSON.parse(raw).map((m: any) => ({
-    ...m,
-    createdAt: new Date(m.createdAt),
-    updatedAt: new Date(m.updatedAt),
-  }));
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) return [];
+  return parsed
+    .map(parseMemory)
+    .filter((memory): memory is CoreMemory => memory !== null);
 };
 
 export const saveMemory = (content: string, emotion: Emotion): CoreMemory => {

@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import StarField from '@/components/StarField';
 import IslandNode from '@/components/IslandNode';
 import OrbJar from '@/components/OrbJar';
+import LoginButton from '@/components/LoginButton';
 import { ISLANDS, type CoreMemory, getEmotionById } from '@/lib/emotions';
 import { loadMemories, getInsights, getTodayMemory } from '@/lib/memory-store';
 import { PenLine } from 'lucide-react';
@@ -60,20 +61,15 @@ const Index = () => {
         />
       )}
 
-      {/* Header */}
-      <motion.header
-        className="relative z-10 pt-4 pb-1 px-6 text-center"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      {/* Login button — positioned within page content, not a custom app bar */}
+      <motion.div
+        className="relative z-10 flex justify-end pt-3 px-6"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
       >
-        <h1 className="text-2xl font-bold text-foreground tracking-tight">
-          Core Memory
-        </h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          나의 감정 섬들을 탐험해보세요
-        </p>
-      </motion.header>
+        <LoginButton />
+      </motion.div>
 
       {/* Islands Map - Grid layout */}
       <div className="relative z-10 mx-auto max-w-sm px-4 py-0">

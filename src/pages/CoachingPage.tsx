@@ -17,6 +17,9 @@ interface CoachingResult {
   action_tip: string;
 }
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : typeof error === 'string' ? error : '알 수 없는 오류입니다.';
+
 const CoachingPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -82,12 +85,13 @@ const CoachingPage = () => {
         preferred_persona: stats.preferred_persona,
         total_coaching_sessions: stats.total_coaching_sessions,
       });
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const message = getErrorMessage(e);
       console.error('Coaching failed:', e);
-      track('error_occurred', { error_type: 'coaching', error_message: e.message || 'unknown' });
+      track('error_occurred', { error_type: 'coaching', error_message: message });
       toast({
         title: '코칭을 불러오지 못했어요',
-        description: e.message || '다시 시도해주세요',
+        description: message,
         variant: 'destructive',
       });
     } finally {

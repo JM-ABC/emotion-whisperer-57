@@ -1,0 +1,14 @@
+{
+  "features": [
+    { "id": "harness-init", "name": "Harness 초기화", "status": "done", "description": "granite.config.ts, viewport, 브랜딩 세팅" },
+    { "id": "home-screen", "name": "홈 화면 (감정 섬 지도)", "status": "done", "description": "8개 감정 섬 그리드, 별빛 배경, 기억 구슬 항아리" },
+    { "id": "write-page", "name": "감정 기록 페이지", "status": "done", "description": "자유 글쓰기 → AI 감정 분석 → 섬 저장" },
+    { "id": "insight-page", "name": "인사이트 페이지", "status": "done", "description": "감정 분포 차트, 캘린더 뷰, 패턴 리포트" },
+    { "id": "coaching-page", "name": "AI 코칭 페이지", "status": "done", "description": "5가지 감정 캐릭터 선택, AI 맞춤 코칭" },
+    { "id": "tds-adapter", "name": "TDS 어댑터", "status": "done", "description": "@toss/tds-mobile 동적 import + shadcn 폴백" },
+    { "id": "login", "name": "토스 로그인 연동", "status": "done", "description": "appLogin() 동적 import, exchange-token edge function, UnlinkCallback" },
+    { "id": "amplitude", "name": "Amplitude 트래킹", "status": "done", "description": "page_viewed, island_clicked, orb_clicked, nav_item_clicked 등" },
+    { "id": "intro-screen", "name": "인트로/온보딩 화면", "status": "todo", "description": "첫 진입 시 인트로 화면 후 로그인 유도 (CLAUDE.md 권장)" },
+    { "id": "ads", "name": "광고 연동 (IntegratedAd v2)", "status": "todo", "description": "보상형 광고 또는 배너 광고" }
+  ]
+}

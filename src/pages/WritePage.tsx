@@ -64,12 +64,13 @@ const WritePage = () => {
       setAiResult(aiData);
       track('emotion_analyzed', { emotion: aiData.emotion, island: aiData.island, core_memory_length: aiData.core_memory.length });
       setPhase('confirm');
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : typeof e === 'string' ? e : '알 수 없는 오류가 발생했습니다.';
       console.error('AI analysis failed:', e);
-      track('error_occurred', { error_type: 'analyze', error_message: e.message || 'unknown' });
+      track('error_occurred', { error_type: 'analyze', error_message: message });
       toast({
         title: '감정 분석에 실패했어요',
-        description: e.message || '다시 시도해주세요',
+        description: message,
         variant: 'destructive',
       });
       setPhase('write');
