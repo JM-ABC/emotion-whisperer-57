@@ -8,7 +8,7 @@
     { "id": "tds-adapter", "name": "TDS 어댑터", "status": "done", "description": "@toss/tds-mobile 동적 import + shadcn 폴백" },
     { "id": "login", "name": "토스 로그인 연동", "status": "done", "description": "appLogin() 동적 import, exchange-token edge function, UnlinkCallback" },
     { "id": "amplitude", "name": "Amplitude 트래킹", "status": "done", "description": "page_viewed, island_clicked, orb_clicked, nav_item_clicked 등" },
-    { "id": "intro-screen", "name": "인트로/온보딩 화면", "status": "todo", "description": "첫 진입 시 인트로 화면 후 로그인 유도 (CLAUDE.md 권장)" },
+    { "id": "intro-screen", "name": "인트로/온보딩 화면", "status": "done", "description": "기억 구슬 비주얼 스플래시, 시작하기 → 토스 로그인 → 홈 플로우" },
     { "id": "ads", "name": "광고 연동 (IntegratedAd v2)", "status": "todo", "description": "보상형 광고 또는 배너 광고" }
   ]
 }
