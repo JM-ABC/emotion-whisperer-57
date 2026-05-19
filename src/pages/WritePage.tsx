@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sparkles } from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import AnalyzingAnimation from '@/components/AnalyzingAnimation';
 import EmotionResultCard from '@/components/EmotionResultCard';
 import OrbSaveAnimation from '@/components/OrbSaveAnimation';
@@ -123,20 +123,6 @@ const WritePage = () => {
           />
         )}
       </AnimatePresence>
-
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
-          <button
-            onClick={() => phase === 'write' ? navigate(-1) : setPhase('write')}
-            className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="text-base font-semibold text-foreground">오늘의 기억</h1>
-          <div className="w-9" />
-        </div>
-      </header>
 
       <AnimatePresence mode="wait">
         {phase === 'mission' && savedIsland ? (

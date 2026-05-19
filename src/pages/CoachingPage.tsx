@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Sparkles, MessageCircle, Loader2 } from 'lucide-react';
+import { Sparkles, MessageCircle, Loader2 } from 'lucide-react';
 import CoachingPersonaSelector, { type Persona, PERSONAS } from '@/components/CoachingPersonaSelector';
 import PatternReport from '@/components/PatternReport';
 import { loadMemories, getInsights } from '@/lib/memory-store';
@@ -21,7 +20,6 @@ const getErrorMessage = (error: unknown): string =>
   error instanceof Error ? error.message : typeof error === 'string' ? error : '알 수 없는 오류입니다.';
 
 const CoachingPage = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [persona, setPersona] = useState<Persona | null>(null);
   const [loading, setLoading] = useState(false);
@@ -124,16 +122,6 @@ const CoachingPage = () => {
           />
         )}
       </AnimatePresence>
-
-      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="text-base font-semibold text-foreground">AI 코칭</h1>
-          <div className="w-9" />
-        </div>
-      </header>
 
       <div className="max-w-lg mx-auto px-4 pt-6 space-y-6 relative z-10">
         {/* Pattern Report */}

@@ -1,7 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
 import { loadMemories, getInsights } from '@/lib/memory-store';
 import { ISLANDS, type Island } from '@/lib/emotions';
 import EmotionCalendar from '@/components/EmotionCalendar';
@@ -12,7 +10,6 @@ type Period = 'daily' | 'weekly' | 'monthly';
 type Tab = 'chart' | 'calendar';
 
 const InsightPage = () => {
-  const navigate = useNavigate();
   const { toast } = useToast();
   const [period, setPeriod] = useState<Period>('weekly');
   const [tab, setTab] = useState<Tab>('chart');
@@ -44,17 +41,6 @@ const InsightPage = () => {
 
   return (
     <div className="min-h-screen pb-24">
-      {/* Header */}
-      <header className="sticky top-0 z-20 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft size={20} />
-          </button>
-          <h1 className="text-base font-semibold text-foreground">감정 인사이트</h1>
-          <div className="w-9" />
-        </div>
-      </header>
-
       <div className="max-w-lg mx-auto px-4 pt-6 space-y-6">
         {/* Tab selector: Chart vs Calendar */}
         <div className="flex bg-card rounded-xl p-1 border border-border">
