@@ -15,6 +15,13 @@ Added: supabase/functions/exchange-token (token exchange stub)
 - Added: src/test/routing.test.tsx — RootPage 리다이렉트 테스트 2개
 - Pushed: origin/main 푸시 완료 (5cac723..b949911)
 
+[2026-05-19] Session 4 작업 내용 (CLAUDE.md 위반 수정):
+- Fixed: WritePage.tsx — custom <header> + ArrowLeft 백버튼 제거
+- Fixed: InsightPage.tsx — custom <header> + ArrowLeft 백버튼 제거, useNavigate 제거
+- Fixed: CoachingPage.tsx — custom <header> + ArrowLeft 백버튼 제거, useNavigate 제거
+- Pushed: origin/main 푸시 완료 (a81c87e..c9fed18)
+
 완료된 기능: harness-init, home-screen, write-page, insight-page, coaching-page,
              tds-adapter, login, amplitude, intro-screen
-다음 작업: ads (광고 연동 — IntegratedAd v2 보상형/배너)
+CLAUDE.md 위반: 모두 수정 완료 (커스텀 헤더/백버튼 전면 제거)
+다음 작업: ads (광고 연동 — 사업자 등록 후 IntegratedAd v2 보상형/배너)
