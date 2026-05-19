@@ -16,10 +16,14 @@ export default function IntroPage() {
   const { login, loading } = useAppLogin();
 
   async function handleStart() {
-    const result = await login();
-    if (result) {
-      localStorage.setItem('intro_seen', '1');
-      navigate('/', { replace: true });
+    try {
+      const result = await login();
+      if (result) {
+        localStorage.setItem('intro_seen', '1');
+        navigate('/', { replace: true });
+      }
+    } catch {
+      // login() handles its own errors via toast; this is a safety net
     }
   }
 

@@ -11,10 +11,10 @@ vi.mock('@/components/StarField', () => ({
 // Mock framer-motion (skip animations)
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
+    div: ({ children, initial, animate, transition, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
       <div {...props}>{children}</div>
     ),
-    button: ({ children, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+    button: ({ children, whileHover, whileTap, initial, animate, transition, ...props }: React.ButtonHTMLAttributes<HTMLButtonElement>) => (
       <button {...props}>{children}</button>
     ),
   },
